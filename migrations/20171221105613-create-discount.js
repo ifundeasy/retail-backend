@@ -1,0 +1,40 @@
+exports.up = function (queryInterface, sequelize) {
+    return queryInterface.createTable('discount', {
+        id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: true
+        },
+        name: {
+            type: sequelize.STRING(30),
+            allowNull: false,
+            defaultValue: ''
+        },
+        isPercent: {
+            type: sequelize.ENUM('0', '1'),
+            allowNull: false,
+            defaultValue: '0'
+        },
+        value: {
+            type: "DOUBLE UNSIGNED",
+            allowNull: false
+        },
+        status_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            references: {
+                model: 'status',
+                key: 'id'
+            }
+        },
+        notes: {
+            type: sequelize.STRING(50),
+            allowNull: true
+        }
+    });
+};
+
+exports.down = (queryInterface, Sequelize) => {
+    return queryInterface.dropTable('discount');
+};
