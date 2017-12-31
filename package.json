@@ -1,0 +1,59 @@
+{
+  "name": "retail-backend",
+  "version": "1.0.0",
+  "description": "Toko Retail - Backend",
+  "author": "Afa Rappresent",
+  "bugs": {
+    "url": "https://github.com/rappresent/retail-backend/issues"
+  },
+  "devDependencies": {
+    "nodemon": "^1.14.3",
+    "supertest": "^3.0.0"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "homepage": "https://github.com/rappresent/retail-backend#readme",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "example",
+    "test",
+    "tests"
+  ],
+  "keywords": [
+    "point of sales",
+    "pos"
+  ],
+  "license": "MIT",
+  "main": "src/app",
+  "repository": {
+    "type": "https",
+    "url": "git+https://github.com/rappresent/retail-backend.git"
+  },
+  "scripts": {
+    "app-dev": "./node_modules/.bin/nodemon bin/app",
+    "app": "node_modules/.bin/pm2 start ./config/pm2.json"
+  },
+  "dependencies": {
+    "async-to-gen": "^1.3.3",
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "connect-multiparty": "^2.1.0",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "fast-csv": "^2.4.1",
+    "mongo-sql": "^4.0.3",
+    "mysql2": "^1.5.1",
+    "nodemailer": "^4.3.1",
+    "pm2": "^2.9.1",
+    "promise-mysql": "^3.1.2",
+    "request": "^2.83.0",
+    "sequelize": "^4.28.6",
+    "sequelize-cli": "^3.2.0",
+    "sql-formatter": "^2.1.0",
+    "uuid": "^3.1.0"
+  }
+}
