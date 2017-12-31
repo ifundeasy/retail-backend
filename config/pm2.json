@@ -1,0 +1,19 @@
+{
+    "apps": [
+        {
+            "name": "retail-backend",
+            "script": "bin/app",
+            "instances": 4,
+            "exec_mode": "cluster",
+            "exec_interpreter": "node",
+            "autorestart": true,
+            "max_memory_restart": "200M",
+            "cron_restart": "1 0 * * *",
+            "merge_logs": true,
+            "error_file": "log/pm2.err",
+            "out_file": "log/pm2.out",
+            "log_file": "log/pm2.log",
+            "log_date_format": "YYYY-MM-DD HH:mm:ss Z"
+        }
+    ]
+}

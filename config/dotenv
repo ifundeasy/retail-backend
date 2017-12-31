@@ -1,0 +1,20 @@
+# APP_ENV : one of [development, stagging, or production]
+APP_ENV=production
+
+APP_IS_HTTPS=true
+APP_PORT=8000
+APP_NAME='Toko Retail'
+
+# APP_TOKEN_EXPIRES : user login session, if unset default value is 900000ms (15 minutes)
+APP_TOKEN_EXPIRES=900000
+
+APP_TOKEN_EXTEND=true
+APP_TOKEN_REGEN=false
+APP_TOKEN_RESAVE=true
+DB_HOST=localhost
+DB_USER=root
+DB_PASS=root
+DB_NAME='retail'
+DB_PORT=3306
+DB_MULTI_STATEMENT=true
+DB_CONN_LIMIT=50
