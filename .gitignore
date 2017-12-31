@@ -1,0 +1,9 @@
+.idea/
+log/
+test/
+trash/
+node_modules/
+uploads/
+.env
+npm-debug.log
+package-lock.json
