@@ -1,0 +1,14 @@
+#!/usr/bin/env node
+const cluster = require('cluster');
+const cpuCount = require('os').cpus().length;
+
+if (cluster.isMaster) {
+    for (var i = 0; i < cpuCount; i++) cluster.fork();
+
+    cluster.on('exit', function (worker, code, signal) {
+    	console.log(process.pid.toString(), `> Worker id ${worker.process.pid} died!`);
+    });
+} else {
+	require('async-to-gen/register');
+	require(`${__dirname}/../src/app`)();
+}

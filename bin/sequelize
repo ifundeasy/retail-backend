@@ -1,0 +1,3 @@
+#!/bin/bash
+
+node_modules/.bin/sequelize $1 --env "`grep -r '^APP_ENV=' .env | awk -F'.env:APP_ENV=' '{print $2}'`"

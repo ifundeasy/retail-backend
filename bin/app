@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+require('async-to-gen/register');
+require('dotenv').config({path: `${__dirname}/../.env`});
+require(`${__dirname}/../src/app`)();
