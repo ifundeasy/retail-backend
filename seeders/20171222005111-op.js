@@ -4,17 +4,17 @@ const Promise = require('bluebird');
 const csv = require('fast-csv');
 const Sequelize = require('Sequelize');
 const data = [
-    {id: 1, name: 'active'},
-    {id: 2, name: 'not active'}
+    {id: 1, name: 'exist'},
+    {id: 2, name: 'deleted'}
 ];
 exports.up = (queryInterface) => {
-    return queryInterface.bulkInsert('status', data, {});
+    return queryInterface.bulkInsert('op', data, {});
 };
 exports.down = (queryInterface) => {
     let ids = data.map(function (obj) {
         return parseInt(obj.id)
     });
-    return queryInterface.bulkDelete('status', {
+    return queryInterface.bulkDelete('op', {
         [Sequelize.Op.in]: ids
     });
 };

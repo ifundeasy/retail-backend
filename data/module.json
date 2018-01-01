@@ -1,0 +1,299 @@
+[
+    {
+        "id": 1,
+        "parent_id": null,
+        "name": "Master",
+        "class": null,
+        "seq": 1
+    },
+    {
+        "id": 2,
+        "parent_id": null,
+        "name": "Account & Roles",
+        "class": null,
+        "seq": 2
+    },
+    {
+        "id": 3,
+        "parent_id": null,
+        "name": "Transaction",
+        "class": null,
+        "seq": 5
+    },
+    {
+        "id": 4,
+        "parent_id": null,
+        "name": "Report",
+        "class": null,
+        "seq": 6
+    },
+    {
+        "id": 5,
+        "parent_id": 1,
+        "name": "Status",
+        "class": "master.status",
+        "seq": 1,
+        "table_scopes": [
+            "status"
+        ]
+    },
+    {
+        "id": 6,
+        "parent_id": 1,
+        "name": "Media",
+        "class": "master.media",
+        "seq": 2,
+        "table_scopes": [
+            "media"
+        ]
+    },
+    {
+        "id": 7,
+        "parent_id": 1,
+        "name": "Payment Method",
+        "class": "master.paymethod",
+        "seq": 3,
+        "table_scopes": [
+            "paymethod"
+        ]
+    },
+    {
+        "id": 8,
+        "parent_id": 1,
+        "name": "Tag & Category",
+        "class": "master.tag",
+        "seq": 4,
+        "table_scopes": [
+            "tag"
+        ]
+    },
+    {
+        "id": 9,
+        "parent_id": 1,
+        "name": "Unit",
+        "class": "master.unit",
+        "seq": 5,
+        "table_scopes": [
+            "unit"
+        ]
+    },
+    {
+        "id": 10,
+        "parent_id": 1,
+        "name": "Brand",
+        "class": "master.brand",
+        "seq": 6,
+        "table_scopes": [
+            "brand"
+        ]
+    },
+    {
+        "id": 11,
+        "parent_id": 1,
+        "name": "Code",
+        "class": "master.code",
+        "seq": 7,
+        "table_scopes": [
+            "code"
+        ]
+    },
+    {
+        "id": 12,
+        "parent_id": 1,
+        "name": "Taxes",
+        "class": "master.taxes",
+        "seq": 8,
+        "table_scopes": [
+            "tax"
+        ]
+    },
+    {
+        "id": 13,
+        "parent_id": 1,
+        "name": "Discount",
+        "class": "master.discount",
+        "seq": 9,
+        "table_scopes": [
+            "discount"
+        ]
+    },
+    {
+        "id": 14,
+        "parent_id": 1,
+        "name": "Product",
+        "class": "master.product",
+        "seq": 10,
+        "table_scopes": [
+            "product",
+            "productCode",
+            "productDiscount",
+            "productMedia",
+            "productPrice",
+            "productTag",
+            "productTax"
+        ]
+    },
+    {
+        "id": 15,
+        "parent_id": 1,
+        "name": "Location",
+        "class": null,
+        "seq": 11
+    },
+    {
+        "id": 16,
+        "parent_id": 2,
+        "name": "Request Method",
+        "class": "role.reqmethod",
+        "seq": 1,
+        "table_scopes": [
+            "httpmethod"
+        ]
+    },
+    {
+        "id": 17,
+        "parent_id": 2,
+        "name": "Backend (URL Routes)",
+        "class": "role.route",
+        "seq": 2,
+        "table_scopes": [
+            "route"
+        ]
+    },
+    {
+        "id": 18,
+        "parent_id": 2,
+        "name": "Module",
+        "class": "role.module",
+        "seq": 3,
+        "table_scopes": [
+            "module",
+            "moduleRoute"
+        ]
+    },
+    {
+        "id": 19,
+        "parent_id": 2,
+        "name": "Actor",
+        "class": "role.actor",
+        "seq": 4,
+        "table_scopes": [
+            "actor"
+        ]
+    },
+    {
+        "id": 20,
+        "parent_id": 2,
+        "name": "Actor Privileges",
+        "class": "role.privilege",
+        "seq": 5,
+        "table_scopes": [
+            "actorModule"
+        ]
+    },
+    {
+        "id": 21,
+        "parent_id": 2,
+        "name": "Account",
+        "class": "role.account",
+        "seq": 6,
+        "table_scopes": [
+            "contact",
+            "person",
+            "personActor",
+            "personAddress",
+            "personContact",
+            "personSession"
+        ]
+    },
+    {
+        "id": 22,
+        "parent_id": 3,
+        "name": "Purchase",
+        "class": "transc.purchase",
+        "seq": 1,
+        "table_scopes": [
+            "purchase",
+            "purchaseItem",
+            "purchasePayment"
+        ]
+    },
+    {
+        "id": 23,
+        "parent_id": 3,
+        "name": "Sales",
+        "class": "transc.sales",
+        "seq": 2,
+        "table_scopes": [
+            "sales",
+            "salesItem",
+            "salesPayment"
+        ]
+    },
+    {
+        "id": 24,
+        "parent_id": 4,
+        "name": "Purchase",
+        "class": "report.purchase",
+        "seq": 1,
+        "table_scopes": []
+    },
+    {
+        "id": 25,
+        "parent_id": 4,
+        "name": "Sales",
+        "class": "report.sales",
+        "seq": 2,
+        "table_scopes": []
+    },
+    {
+        "id": 26,
+        "parent_id": 15,
+        "name": "National",
+        "class": "location.national",
+        "seq": 1,
+        "table_scopes": [
+            "national"
+        ]
+    },
+    {
+        "id": 27,
+        "parent_id": 15,
+        "name": "State",
+        "class": "location.state",
+        "seq": 2,
+        "table_scopes": [
+            "state"
+        ]
+    },
+    {
+        "id": 28,
+        "parent_id": 15,
+        "name": "Regency",
+        "class": "location.regency",
+        "seq": 3,
+        "table_scopes": [
+            "regency"
+        ]
+    },
+    {
+        "id": 29,
+        "parent_id": 15,
+        "name": "District",
+        "class": "location.district",
+        "seq": 4,
+        "table_scopes": [
+            "district"
+        ]
+    },
+    {
+        "id": 30,
+        "parent_id": 15,
+        "name": "Village",
+        "class": "location.village",
+        "seq": 5,
+        "table_scopes": [
+            "village"
+        ]
+    }
+]
