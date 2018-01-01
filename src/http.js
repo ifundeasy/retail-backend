@@ -223,9 +223,11 @@ module.exports = async function () {
         }
     };
     let tables = await compile(`
-        SELECT TABLE_COMMENT, TABLE_NAME
-        FROM INFORMATION_SCHEMA.TABLES 
-        WHERE TABLE_SCHEMA='${Glob.config.mysql.database}' AND TABLE_COMMENT REGEXP('.')
+        SELECT TABLE_NAME
+        FROM INFORMATION_SCHEMA.TABLES
+        WHERE TABLE_SCHEMA='${Glob.config.mysql.database}'
+        AND TABLE_COMMENT != 'hidden'
+        AND TABLE_NAME NOT IN('_migration', '_seeder')
         ORDER BY TABLE_COMMENT, TABLE_NAME
     `);
     if (tables instanceof Error) {
@@ -234,9 +236,7 @@ module.exports = async function () {
         return;
     }
     //
-    Glob.pages = [];
     Glob.tables = tables.map(function (o) {
-        if (Glob.pages.indexOf(o.TABLE_COMMENT) !== -1) Glob.pages.push(o.TABLE_COMMENT);
         return o.TABLE_NAME;
     });
     return http(pool, compile);
