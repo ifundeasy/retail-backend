@@ -6,6 +6,23 @@ exports.up = function (queryInterface, sequelize) {
             primaryKey: true,
             autoIncrement: true
         },
+        TABLENAME: {
+            type: sequelize.STRING(30),
+            allowNull: true
+        },
+        value: {
+            type: sequelize.STRING(30),
+            allowNull: false,
+            defaultValue: ''
+        },
+        httpmethod_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            references: {
+                model: 'httpmethod',
+                key: 'id'
+            }
+        },
         module_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
@@ -13,10 +30,6 @@ exports.up = function (queryInterface, sequelize) {
                 model: 'module',
                 key: 'id'
             }
-        },
-        TABLENAME: {
-            type: sequelize.STRING(30),
-            allowNull: true
         },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
