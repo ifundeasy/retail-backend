@@ -1,5 +1,5 @@
 exports.up = function (queryInterface, sequelize) {
-    return queryInterface.createTable('status', {
+    return queryInterface.createTable('httpmethod', {
         id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
@@ -11,6 +11,10 @@ exports.up = function (queryInterface, sequelize) {
             allowNull: false,
             defaultValue: ''
         },
+        code: {
+            type: sequelize.CHAR(10),
+            allowNull: true
+        },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
@@ -20,14 +24,22 @@ exports.up = function (queryInterface, sequelize) {
                 key: 'id'
             }
         },
+        status_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            defaultValue: 1,
+            references: {
+                model: 'status',
+                key: 'id'
+            }
+        },
         notes: {
             type: sequelize.STRING(50),
-            allowNull: true,
-            defaultValue: ''
+            allowNull: true
         }
     });
 };
 
 exports.down = (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('status');
+    return queryInterface.dropTable('httpmethod');
 };

@@ -23,9 +23,19 @@ exports.up = function (queryInterface, sequelize) {
                 key: 'id'
             }
         },
+        op_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            defaultValue: 1,
+            references: {
+                model: 'op',
+                key: 'id'
+            }
+        },
         status_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
+            defaultValue: 1,
             references: {
                 model: 'status',
                 key: 'id'

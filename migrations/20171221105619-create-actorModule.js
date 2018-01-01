@@ -1,35 +1,40 @@
 exports.up = function (queryInterface, sequelize) {
-    return queryInterface.createTable('apiRoute', {
+    return queryInterface.createTable('actorModule', {
         id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
-            type: sequelize.STRING(30),
-            allowNull: false,
-            defaultValue: ''
-        },
-        api_id: {
+        actor_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
             references: {
-                model: 'api',
+                model: 'actor',
                 key: 'id'
             }
         },
-        http_id: {
+        module_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
             references: {
-                model: 'http',
+                model: 'module',
+                key: 'id'
+            }
+        },
+        op_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            defaultValue: 1,
+            references: {
+                model: 'op',
                 key: 'id'
             }
         },
         status_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
+            defaultValue: 1,
             references: {
                 model: 'status',
                 key: 'id'
@@ -43,5 +48,5 @@ exports.up = function (queryInterface, sequelize) {
 };
 
 exports.down = (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('apiRoute');
+    return queryInterface.dropTable('actorModule');
 };
