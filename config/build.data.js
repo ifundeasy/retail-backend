@@ -34,16 +34,12 @@ const HttpMethod = {
         [4, 'delete', 'DELETE'],
     ]
 };
-const Route = {
-    fields: ['id', 'TABLENAME', 'value', 'httpmethod_id'],
-    values: []
-};
 const Module = {
     fields: ['id', 'module_id', 'name', 'class', 'seq'],
     values: []
 };
 const ModuleRoute = {
-    fields: ['id', 'module_id', 'TABLENAME'],
+    fields: ['id', 'TABLENAME', 'value', 'httpmethod_id', 'module_id'],
     values: []
 };
 const ActorModule = {
@@ -66,19 +62,17 @@ moduleMap.forEach(function (obj) {
         });
     }
 });
-Object.keys(tables).sort().forEach(function (name, i) {
-    HttpMethod.values.forEach(function (el) {
-        Route.values.push([Route.values.length + 1, name, '/api/' + name, el[0]]);
-    });
-});
 moduleMap.forEach(function (obj) {
     if (obj.table_scopes instanceof Array) {
         let module_id = obj.id;
         obj.table_scopes.forEach(function (name) {
-            ModuleRoute.values.push([
-                ModuleRoute.values.length + 1,
-                module_id, name
-            ])
+            HttpMethod.values.forEach(function (el) {
+                ModuleRoute.values.push([
+                    ModuleRoute.values.length + 1,
+                    name, '/api/' + name, el[0],
+                    module_id
+                ])
+            });
         });
     }
 });
@@ -88,7 +82,6 @@ module.exports = {
     person: Person,
     personActor: PersonActor,
     httpmethod: HttpMethod,
-    route: Route,
     module: Module,
     moduleRoute: ModuleRoute,
     actorModule: ActorModule

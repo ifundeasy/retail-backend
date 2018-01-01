@@ -153,16 +153,6 @@
     {
         "id": 17,
         "parent_id": 2,
-        "name": "Backend (URL Routes)",
-        "class": "role.route",
-        "seq": 2,
-        "table_scopes": [
-            "route"
-        ]
-    },
-    {
-        "id": 18,
-        "parent_id": 2,
         "name": "Module",
         "class": "role.module",
         "seq": 3,
@@ -172,7 +162,7 @@
         ]
     },
     {
-        "id": 19,
+        "id": 18,
         "parent_id": 2,
         "name": "Actor",
         "class": "role.actor",
@@ -182,7 +172,7 @@
         ]
     },
     {
-        "id": 20,
+        "id": 19,
         "parent_id": 2,
         "name": "Actor Privileges",
         "class": "role.privilege",
@@ -192,7 +182,7 @@
         ]
     },
     {
-        "id": 21,
+        "id": 20,
         "parent_id": 2,
         "name": "Account",
         "class": "role.account",
@@ -207,7 +197,7 @@
         ]
     },
     {
-        "id": 22,
+        "id": 21,
         "parent_id": 3,
         "name": "Purchase",
         "class": "transc.purchase",
@@ -219,7 +209,7 @@
         ]
     },
     {
-        "id": 23,
+        "id": 22,
         "parent_id": 3,
         "name": "Sales",
         "class": "transc.sales",
@@ -231,7 +221,7 @@
         ]
     },
     {
-        "id": 24,
+        "id": 23,
         "parent_id": 4,
         "name": "Purchase",
         "class": "report.purchase",
@@ -239,7 +229,7 @@
         "table_scopes": []
     },
     {
-        "id": 25,
+        "id": 24,
         "parent_id": 4,
         "name": "Sales",
         "class": "report.sales",
@@ -247,7 +237,7 @@
         "table_scopes": []
     },
     {
-        "id": 26,
+        "id": 25,
         "parent_id": 15,
         "name": "National",
         "class": "location.national",
@@ -257,7 +247,7 @@
         ]
     },
     {
-        "id": 27,
+        "id": 26,
         "parent_id": 15,
         "name": "State",
         "class": "location.state",
@@ -267,7 +257,7 @@
         ]
     },
     {
-        "id": 28,
+        "id": 27,
         "parent_id": 15,
         "name": "Regency",
         "class": "location.regency",
@@ -277,7 +267,7 @@
         ]
     },
     {
-        "id": 29,
+        "id": 28,
         "parent_id": 15,
         "name": "District",
         "class": "location.district",
@@ -287,7 +277,7 @@
         ]
     },
     {
-        "id": 30,
+        "id": 29,
         "parent_id": 15,
         "name": "Village",
         "class": "location.village",
