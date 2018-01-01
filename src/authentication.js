@@ -8,14 +8,14 @@ module.exports = function (Glob, locals, compile) {
         if (!token) return next();
         try {
             //checking data
-            let session = await compile(`SELECT * FROM personSession WHERE value = ? AND status_id = 1`, token);
+            let session = await compile(`SELECT * FROM personSession WHERE value = ? AND op_id = 1`, token);
             if (!session.length && path === '/login') return next();
             if (session instanceof Error || session.length !== 1) throw (new Error(`Invalid lookup for token ${token}`));
             else session = session[0];
 
             //checking if path == /logout
             if (path === '/logout') {
-                let updateSession = await compile(`UPDATE personSession SET status_id = 2 WHERE id = ? `, session.id);
+                let updateSession = await compile(`UPDATE personSession SET op_id = 2 WHERE id = ?`, session.id);
                 if (updateSession instanceof Error) throw (new Error(`Failed destroying user's token ${token} for logging out`));
                 return next();
             }
@@ -26,7 +26,7 @@ module.exports = function (Glob, locals, compile) {
             if (currentTime > expiredAt) throw (new Error(`Invalid session expires for token's ${token}`));
 
             //lookup user
-            let user = await compile(`SELECT * FROM person WHERE id = ? AND status_id = 1`, session['person_id']);
+            let user = await compile(`SELECT * FROM person WHERE id = ? AND op_id = 1`, session['person_id']);
             if (user instanceof Error || user.length > 1) throw (new Error(`Invalid lookup user for token's ${token}`));
             else user = user[0];
 
@@ -46,7 +46,7 @@ module.exports = function (Glob, locals, compile) {
                 newSession.value = uuid.v4(),
                     newSession.expires = new Date(new Date().getTime() + expires);
 
-                let updateSession = await compile(`UPDATE person_session SET status_id = 2 WHERE id = ?`, session.id);
+                let updateSession = await compile(`UPDATE person_session SET op_id = 2 WHERE id = ?`, session.id);
                 if (updateSession instanceof Error) throw (new Error(`Failed destroying user's token ${token}`));
 
                 let addSession = await compile(
