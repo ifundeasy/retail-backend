@@ -162,7 +162,10 @@ const http = async function (pool, compile) {
     });
     app.get('/me', Authorization, async function (req, res, next) {
         let {status, message} = httpCode.OK;
-        res.send({status, message, data: req.logged})
+        let {user, actor, modules, routes} = req.logged;
+        delete user.password;
+        delete user.salt;
+        res.send({status, message, data: {user, actor, modules, routes}})
     });
     app.use('/api', Authorization, require(`${src}/http.api`)({Glob, locals, compile}));
     /** **************************************************************************
