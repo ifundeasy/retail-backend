@@ -131,17 +131,18 @@ module.exports = function ({Glob, locals, compile}) {
     const {name} = locals;
     const middleware = async function (req, res, next) {
         let {method, query, body} = req,
-            {authorized} = req.logged,
+            {routes} = req.logged,
             {name} = req.params,
-            {status, message} = httpCode.OK;
+            {status, message} = httpCode.OK,
+            reqUrl = '/api' + req._parsedUrl.pathname;
 
         try {
             let param;
             if (Glob.tables.indexOf(name) === -1) {
                 throw new Error(`Invalid route name for /api/${name}`);
             } else param = {table: name};
-            if (!authorized[name]) throw new Error(`You can't access /api/${name} route`);
-            if (authorized[name].methods.indexOf(method) === -1) {
+            if (!routes.hasOwnProperty(reqUrl)) throw new Error(`You can't access /api/${name} route`);
+            if (routes[reqUrl].methods.indexOf(method) === -1) {
                 throw new Error(`You can't access /api/${name} route with ${method}'s method`);
             }
             //
@@ -176,13 +177,14 @@ module.exports = function ({Glob, locals, compile}) {
         });
         let {status, message} = httpCode.OK;
         //
-        await Promise.map(Glob.tables, async function (name) {
+        await Promise.map(Glob.tables, async function (name, i) {
             let rawFields = await compile(`DESCRIBE ${name}`);
             let {columns, upRelation} = await getUpJoin(name, 'o');
             let self = {};
             rawFields.forEach(function (el) {
                 self[el.Field] = {
                     type: el.Type,
+                    /** Hide useless information **/
                     //null: el.Null,
                     //key: el.Key,
                     //default: el.Default
@@ -191,13 +193,14 @@ module.exports = function ({Glob, locals, compile}) {
             upRelation.forEach(function (relate) {
                 let table = Glob.tables[lowerCaseTables.indexOf(relate.table_ref)];
                 let prefix = relate.column.substr(0, relate.column.length - relate.column_ref.length - 1);
-                self[relate.column].table_ref = table;
+                self[relate.column].table_ref = table || '?';
                 self[relate.column].column_ref = relate.column_ref;
-                if (prefix !== table) self[relate.column].prefix = prefix;
+                self[relate.column].relation = table ? 'open' : 'restrict';
+                self[relate.column].prefix = prefix !== table ? prefix : table;
             });
             tables[name] = self;
         });
-
+        /** Hide useless information **/
         //for (let name in tables) {
         //    let table = tables[name];
         //    for (let key in table) {
