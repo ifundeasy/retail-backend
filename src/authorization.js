@@ -35,15 +35,18 @@ module.exports = function (compile) {
                 routes[role.route].methods = routes[role.route].methods || [];
                 routes[role.route].methods.push(role.httpmethod_code)
             }
-            if (!modules.hasOwnProperty(module_id)) {
-                modules[module_id] = {
-                    id: module_id,
-                    parent: module_parent,
-                    name: module_name,
-                    class: module_class,
-                    seq: module_seq,
-                    notes: module_notes
-                }
+            
+            modules[module_id] = modules[module_id] || {
+                id: module_id,
+                parent: module_parent,
+                name: module_name,
+                class: module_class,
+                seq: module_seq,
+                notes: module_notes,
+                tables: []
+            };
+            if (role.TABLENAME && modules[module_id].tables.indexOf(role.TABLENAME) < 0) {
+            	modules[module_id].tables.push(role.TABLENAME);            
             }
         }
         /** For nested data modules **/
