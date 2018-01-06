@@ -41,6 +41,11 @@ exports.up = function (queryInterface, sequelize) {
             allowNull: false,
             defaultValue: '0'
         },
+        tip: {
+            type: "DOUBLE",
+            allowNull: false,
+            defaultValue: '0'
+        },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,

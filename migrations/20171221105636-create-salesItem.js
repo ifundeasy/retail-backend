@@ -22,25 +22,33 @@ exports.up = function (queryInterface, sequelize) {
                 key: 'id'
             }
         },
-        product_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: false,
-            references: {
-                model: 'product',
-                key: 'id'
-            }
-        },
-        productPrice_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: false,
-            references: {
-                model: 'productprice',
-                key: 'id'
-            }
-        },
         qty: {
             type: sequelize.INTEGER(11),
             allowNull: false
+        },
+        productSales_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            references: {
+                model: 'productsales',
+                key: 'id'
+            }
+        },
+        productTax_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            references: {
+                model: 'producttax',
+                key: 'id'
+            }
+        },
+        productDiscount_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            references: {
+                model: 'productdiscount',
+                key: 'id'
+            }
         },
         person_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
