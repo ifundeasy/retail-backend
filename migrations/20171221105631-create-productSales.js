@@ -1,5 +1,5 @@
 exports.up = function (queryInterface, sequelize) {
-    return queryInterface.createTable('productPrice', {
+    return queryInterface.createTable('productSales', {
         id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
@@ -14,6 +14,11 @@ exports.up = function (queryInterface, sequelize) {
                 key: 'id'
             }
         },
+        price: {
+            type: "DOUBLE",
+            allowNull: false,
+            defaultValue: '0'
+        },
         unit_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
@@ -21,10 +26,6 @@ exports.up = function (queryInterface, sequelize) {
                 model: 'unit',
                 key: 'id'
             }
-        },
-        value: {
-            type: "DOUBLE",
-            allowNull: false
         },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
@@ -52,5 +53,5 @@ exports.up = function (queryInterface, sequelize) {
 };
 
 exports.down = (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('productPrice');
+    return queryInterface.dropTable('productSales');
 };
