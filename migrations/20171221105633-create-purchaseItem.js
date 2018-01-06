@@ -18,7 +18,7 @@ exports.up = function (queryInterface, sequelize) {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: true,
             references: {
-                model: 'purchaseitem',
+                model: 'purchaseItem',
                 key: 'id'
             }
         },
@@ -30,7 +30,7 @@ exports.up = function (queryInterface, sequelize) {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
             references: {
-                model: 'productpurchase',
+                model: 'productPurchase',
                 key: 'id'
             }
         },
