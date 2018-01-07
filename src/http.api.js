@@ -27,16 +27,47 @@ const urlCheck = function (param, method, query = {}, body = {}) {
     if (error.length) error = new Error(`Invalid ${error.join(',')}`);
     //
     if (method === 'POST') {
-        param.type = 'update';
-        param.values = body;
+        param.type = 'insert';
+        if (body.constructor === Object) body = [body];
+        param.values = body.map(function (row) {
+            if (row.id === 0) delete row.id;
+            if (row._) delete row._;
+            return row;
+        });
     } else if (method === 'PUT') {
-        param.type = 'update';
-        param.values = body;
-        param.where = filter;
+        param.operations = [];
+        if (body.constructor === Object) body = [body];
+        body.forEach(function (row) {
+            let condition = row._;
+            let {id} = condition;
+            delete row._;
+            if (condition.hasOwnProperty('id') && id) {
+                param.operations.push({
+                    type: 'update',
+                    updates: row,
+                    where: {id}
+                })
+            } else {
+                param.operations.push({
+                    type: 'insert',
+                    values: row
+                })
+            }
+        });
     } else if (method === 'DELETE') {
-        param.type = 'delete';
-        param.where = filter;
+        param.type = 'update';
+        if (body.constructor === Object) body = [body];
+        let $in = body.filter(function (o) {
+            if (o.id) return 1
+            return 0;
+        }).map(function (o) {
+            return o.id
+        });
+        param.updates = {op_id: 2};
+        param.where = {id: {$in}};
     } else if (method === 'GET') {
+        filter = filter || {};
+        filter.op_id = 1;
         param.alias = 'z';
         param.type = 'select';
         param.where = filter;
@@ -90,7 +121,7 @@ const getUpJoin = async function (name, alias) {
         let table_name = i ? relate.table_ref : name;
         let cols = await describeColumns(table_name);
         let newAlias = relate.column ? relate.column.substr(0, relate.column.length - relate.column_ref.length - 1) : '';
-        
+
         if (i) {
             join = {
                 type: 'left',
@@ -98,6 +129,7 @@ const getUpJoin = async function (name, alias) {
                 alias: 'r' + i,
                 on: {[relate.column_ref]: `$z.${relate.column}$`}
             };
+            if (table_name !== 'op') join.on['op_id'] = 1;
             joins.push(join);
         }
 
@@ -114,10 +146,10 @@ const getUpJoin = async function (name, alias) {
                 return 0;
             });
             if (!isExist.length) {
-            	columns.push({
-	                name: columnName,
-	                as: asColumn
-	            });
+                columns.push({
+                    name: columnName,
+                    as: asColumn
+                });
             }
         })
     });
@@ -149,17 +181,51 @@ module.exports = function ({Glob, locals, compile}) {
             let url = urlCheck(param, method, query, body);
             if (url.error instanceof Error) throw new Error(url.error);
             param = url.param;
-            if (method === 'GET') {
+
+            let result, request, sql, total;
+            if (method === 'PUT') {
+                let params = param.operations.map(function (row, i) {
+                    row.table = param.table
+                    return row;
+                });
+                //
+                request = {method, body, query, sql: []};
+                result = await Promise.all(Promise.map(params, function (par) {
+                    sql = qbuilder(par);
+                    request.sql.push(sql.raw)
+                    return compile(sql.raw);
+                }))
+            } else if (method === 'GET') {
+                let sums;
                 let {columns, joins} = await getUpJoin(name, param.alias);
                 Object.assign(param, {columns, joins});
+                //
+                sums = qbuilder({
+                    type: param.type,
+                    table: param.table,
+                    alias: param.alias,
+                    columns: [
+                        { type: 'COUNT', expression: '*', as: 'counts' }
+                    ],
+                    joins: param.joins,
+                    where: param.where
+                });
+                sql = qbuilder(param);
+                request = {method, body, query, sql: sql.raw};
+                result = await compile(sql.raw);
+                total = await compile(sums.raw);
+            } else {
+                sql = qbuilder(param);
+                request = {method, body, query, sql: sql.raw};
+                result = await compile(sql.raw);
             }
             //
-            let sql = qbuilder(param);
-            let request = {method, body, query, sql: sql.raw};
-            let result = await compile(sql.raw);
-            //
             if (result instanceof Error) throw result;
-            else res.send({status, message, request, data: result});
+            else {
+                let bodySend = {status, message, request, data: result};
+                if (total) bodySend.total = total[0].counts;
+                res.send(bodySend);
+            }
         } catch (e) {
             if (e.message.indexOf('Unexpected token') === 0) {
                 let s = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
