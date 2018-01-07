@@ -15,6 +15,8 @@ moSQL.raw = function ({query, values}) {
 			if (val.constructor == String) {
 				val = `"${val}"`.replace(/\"\`|\`\"/g, '`')
 			}
+		} else if (val == '') {
+			return '""'
 		}
 		return val;
 	})
