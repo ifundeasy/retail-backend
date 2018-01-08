@@ -11,52 +11,60 @@ const jsonParse = function (string) {
         return e
     }
 };
-const urlCheck = function (param, method, query = {}, body = {}) {
-    let error = [];
+const urlCheck = async function (param, method, query = {}, body = {}) {
+    let filter, error = [];
+    let columns = await describeColumns(param.table);
     if (['POST', 'PUT'].indexOf(method) > -1 && !Object.keys(body).length) {
         error.push('body payloads value');
     }
-    //
-    let filter;
     if (query.hasOwnProperty('filter') && method !== 'POST') {
         filter = jsonParse(query.filter);
         if (!filter) error.push(filter.message);
         if (!Object.keys(filter).length) error.push('query string for filter value');
     }
-    //
     if (error.length) error = new Error(`Invalid ${error.join(',')}`);
-    //
     if (method === 'POST') {
+        body = body.constructor === Object ? [body] : body;
         param.type = 'insert';
-        if (body.constructor === Object) body = [body];
         param.values = body.map(function (row) {
-            if (row.id === 0) delete row.id;
-            if (row._) delete row._;
-            return row;
+            let data = {};
+
+            columns.forEach(function (field) {
+                if (row[field]) data[field] = row[field];
+            });
+            data.op_id = 1;
+
+            return data
         });
     } else if (method === 'PUT') {
         param.operations = [];
-        if (body.constructor === Object) body = [body];
+        body = body.constructor === Object ? [body] : body;
         body.forEach(function (row) {
+            let data = {};
             let condition = row._;
             let {id} = condition;
-            delete row._;
+
+            columns.forEach(function (field) {
+                data[field] = row[field];
+            });
+            data.op_id = 1;
+
             if (condition.hasOwnProperty('id') && id) {
                 param.operations.push({
                     type: 'update',
-                    updates: row,
+                    updates: data,
                     where: {id}
                 })
             } else {
                 param.operations.push({
                     type: 'insert',
-                    values: row
+                    values: data
                 })
             }
         });
     } else if (method === 'DELETE') {
+        body = body.constructor === Object ? [body] : body;
         param.type = 'update';
-        if (body.constructor === Object) body = [body];
         let $in = body.filter(function (o) {
             if (o.id) return 1
             return 0;
@@ -178,7 +186,7 @@ module.exports = function ({Glob, locals, compile}) {
                 throw new Error(`You can't access /api/${name} route with ${method}'s method`);
             }
             //
-            let url = urlCheck(param, method, query, body);
+            let url = await urlCheck(param, method, query, body);
             if (url.error instanceof Error) throw new Error(url.error);
             param = url.param;
 
@@ -205,7 +213,7 @@ module.exports = function ({Glob, locals, compile}) {
                     table: param.table,
                     alias: param.alias,
                     columns: [
-                        { type: 'COUNT', expression: '*', as: 'counts' }
+                        {type: 'COUNT', expression: '*', as: 'counts'}
                     ],
                     joins: param.joins,
                     where: param.where
