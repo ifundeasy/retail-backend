@@ -106,7 +106,7 @@ const http = async function (pool, compile) {
             let {username, password} = req.body;
             try {
                 //checking username
-                let data = await compile(`SELECT * FROM person WHERE username = ?`, username);
+                let data = await compile(`SELECT * FROM person WHERE username = ? AND op_id = 1`, username);
                 if (data instanceof Error || data.length !== 1) throw (new Error('Invalid username'));
 
                 //checking password
@@ -118,14 +118,15 @@ const http = async function (pool, compile) {
                 let token = uuid.v4(),
                     expires = new Date(new Date().getTime() + Glob.token.expires),
                     addSession = await compile(
-                        `INSERT INTO personSession set value = ?, expires = ?, \`person_id\` = ?`,
-                        [token, expires, user.id]
+                        `INSERT INTO personSession set value = ?, expires = ?, person_id = ?, status_id = ?`,
+                        [token, expires, user.id, user.status_id]
                     );
+
                 if (addSession instanceof Error) throw (new Error('Failed generate new token'));
 
                 //update login count
                 let updateUser = await compile(
-                    `UPDATE person SET loginCount = ? WHERE id = ?`,
+                    `UPDATE person SET loginCount = ? WHERE id = ? AND op_id = 1`,
                     [user.loginCount + 1, user.id]
                 );
                 if (updateUser instanceof Error) throw (new Error('Failed set login counter'));

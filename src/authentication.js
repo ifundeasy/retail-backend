@@ -50,8 +50,8 @@ module.exports = function (Glob, locals, compile) {
                 if (updateSession instanceof Error) throw (new Error(`Failed destroying user's token ${token}`));
 
                 let addSession = await compile(
-                    `INSERT INTO personSession set value = ?, expires = ?, person_id = ?`,
-                    [newSession.value, newSession.expires, user.id]
+                    `INSERT INTO personSession set value = ?, expires = ?, person_id = ?, status_id = ?`,
+                    [newSession.value, newSession.expires, user.id, user.status_id]
                 );
                 if (addSession instanceof Error) throw (new Error(`Failed generate new token for token's ${token}`));
 
