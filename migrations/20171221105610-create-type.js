@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 exports.up = function (queryInterface, sequelize) {
-    let name = 'purchasePayment';
+    let name = 'type';
     let model = {
         id: {
             type: sequelize.INTEGER(11).UNSIGNED,
@@ -8,45 +8,10 @@ exports.up = function (queryInterface, sequelize) {
             primaryKey: true,
             autoIncrement: true
         },
-        purchase_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
+        name: {
+            type: sequelize.STRING(30),
             allowNull: false,
-            reff: {
-                model: 'purchase',
-                key: 'id'
-            }
-        },
-        paymethod_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: false,
-            reff: {
-                model: 'paymethod',
-                key: 'id'
-            }
-        },
-        number: {
-            type: sequelize.STRING(20),
-            allowNull: true
-        },
-        total: {
-            type: "DOUBLE",
-            allowNull: false,
-            defaultValue: '0'
-        },
-        value: {
-            type: "DOUBLE",
-            allowNull: false,
-            defaultValue: '0'
-        },
-        change: {
-            type: "DOUBLE",
-            allowNull: false,
-            defaultValue: '0'
-        },
-        tip: {
-            type: "DOUBLE",
-            allowNull: false,
-            defaultValue: '0'
+            defaultValue: ''
         },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
@@ -91,5 +56,5 @@ exports.up = function (queryInterface, sequelize) {
 };
 
 exports.down = (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('purchasePayment');
+    return queryInterface.dropTable('type');
 };

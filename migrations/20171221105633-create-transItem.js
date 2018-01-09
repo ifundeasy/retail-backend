@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 exports.up = function (queryInterface, sequelize) {
-    let name = 'purchase';
+    let name = 'transItem';
     let model = {
         id: {
             type: sequelize.INTEGER(11).UNSIGNED,
@@ -8,28 +8,51 @@ exports.up = function (queryInterface, sequelize) {
             primaryKey: true,
             autoIncrement: true
         },
-        code: {
-            type: sequelize.STRING(30),
+        trans_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
-            unique: true
+            reff: {
+                model: 'trans',
+                key: 'id'
+            }
         },
-        purchase_id: {
+        transItem_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: true,
             reff: {
-                model: 'purchase',
+                model: 'transItem',
+                key: 'id'
+            }
+        },
+        qty: {
+            type: sequelize.INTEGER(11),
+            allowNull: false
+        },
+        productPrice_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            reff: {
+                model: 'productPrice',
+                key: 'id'
+            }
+        },
+        productTax_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            reff: {
+                model: 'productTax',
+                key: 'id'
+            }
+        },
+        productDiscount_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            reff: {
+                model: 'productDiscount',
                 key: 'id'
             }
         },
         person_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: true,
-            reff: {
-                model: 'person',
-                key: 'id'
-            }
-        },
-        dealer_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
             reff: {
@@ -57,7 +80,8 @@ exports.up = function (queryInterface, sequelize) {
         },
         notes: {
             type: sequelize.STRING(50),
-            allowNull: true
+            allowNull: true,
+            defaultValue: ''
         }
     };
     return Promise.all(
@@ -80,5 +104,5 @@ exports.up = function (queryInterface, sequelize) {
 };
 
 exports.down = (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('purchase');
+    return queryInterface.dropTable('transItem');
 };
