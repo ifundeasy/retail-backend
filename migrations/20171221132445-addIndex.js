@@ -7,14 +7,15 @@ const Indexes = [
     ['district', {name: 'idx_name', fields: ['name']}],
     ['village', {name: 'idx_name', fields: ['name']}],
     ['village', {name: 'idx_zipcode', fields: ['zipcode']}],
+    ['type', {name:'idx_value', unique: true, fields: ['name']}],
+    ['tag', {name:'idx_value', unique: true, fields: ['name']}],
     ['code', {name:'idx_value', unique: true, fields: ['value']}],
     ['brand', {name:'idx_name',  unique: true, fields: ['name'] }],
     ['contact', {name:'idx_value', unique: true, fields: ['value']}],
     ['person', {name: 'idx_name', fields: ['name']}],
     ['person', {name: 'idx_username', unique: true, fields: ['username']}],
     ['product', {name: 'idx_name', fields: ['name']}],
-    ['purchase', {name: 'idx_code', unique: true, fields: ['code']}],
-    ['sales', {name: 'idx_code', unique: true, fields: ['code']}]
+    ['trans', {name: 'idx_code', unique: true, fields: ['code']}]
 ];
 
 exports.up = async (queryInterface, Sequelize) => {
