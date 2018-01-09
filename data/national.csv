@@ -1,254 +1,254 @@
-id,"iso2","iso3",numcode,"name","phonecode",status_id,"notes"
-1,"AF","AFG",4,"Afghanistan","93",1,NULL
-2,"AX","ALA",248,"Aland Islands","358",1,NULL
-3,"AL","ALB",8,"Albania","355",1,NULL
-4,"DZ","DZA",12,"Algeria","213",1,NULL
-5,"AS","ASM",16,"American Samoa","168",1,NULL
-6,"AD","AND",20,"Andorra","376",1,NULL
-7,"AO","AGO",24,"Angola","244",1,NULL
-8,"AI","AIA",660,"Anguilla","126",1,NULL
-9,"AQ","",NULL,"Antarctica","0",1,NULL
-10,"AG","ATG",28,"Antigua and Barbuda","126",1,NULL
-11,"AR","ARG",32,"Argentina","54",1,NULL
-12,"AM","ARM",51,"Armenia","374",1,NULL
-13,"AW","ABW",533,"Aruba","297",1,NULL
-14,"AP","0",0,"Asia / Pacific Region","0",1,NULL
-15,"AU","AUS",36,"Australia","61",1,NULL
-16,"AT","AUT",40,"Austria","43",1,NULL
-17,"AZ","AZE",31,"Azerbaijan","994",1,NULL
-18,"BS","BHS",44,"Bahamas","124",1,NULL
-19,"BH","BHR",48,"Bahrain","973",1,NULL
-20,"BD","BGD",50,"Bangladesh","880",1,NULL
-21,"BB","BRB",52,"Barbados","124",1,NULL
-22,"BY","BLR",112,"Belarus","375",1,NULL
-23,"BE","BEL",56,"Belgium","32",1,NULL
-24,"BZ","BLZ",84,"Belize","501",1,NULL
-25,"BJ","BEN",204,"Benin","229",1,NULL
-26,"BM","BMU",60,"Bermuda","144",1,NULL
-27,"BT","BTN",64,"Bhutan","975",1,NULL
-28,"BO","BOL",68,"Bolivia","591",1,NULL
-29,"BQ","BES",535,"Bonaire, Sint Eustatius and Saba","599",1,NULL
-30,"BA","BIH",70,"Bosnia and Herzegovina","387",1,NULL
-31,"BW","BWA",72,"Botswana","267",1,NULL
-32,"BV","",NULL,"Bouvet Island","0",1,NULL
-33,"BR","BRA",76,"Brazil","55",1,NULL
-34,"IO","",NULL,"British Indian Ocean Territory","246",1,NULL
-35,"BN","BRN",96,"Brunei Darussalam","673",1,NULL
-36,"BG","BGR",100,"Bulgaria","359",1,NULL
-37,"BF","BFA",854,"Burkina Faso","226",1,NULL
-38,"BI","BDI",108,"Burundi","257",1,NULL
-39,"KH","KHM",116,"Cambodia","855",1,NULL
-40,"CM","CMR",120,"Cameroon","237",1,NULL
-41,"CA","CAN",124,"Canada","1",1,NULL
-42,"CV","CPV",132,"Cape Verde","238",1,NULL
-43,"KY","CYM",136,"Cayman Islands","134",1,NULL
-44,"CF","CAF",140,"Central African Republic","236",1,NULL
-45,"TD","TCD",148,"Chad","235",1,NULL
-46,"CL","CHL",152,"Chile","56",1,NULL
-47,"CN","CHN",156,"China","86",1,NULL
-48,"CX","",NULL,"Christmas Island","61",1,NULL
-49,"CC","",NULL,"Cocos (Keeling) Islands","672",1,NULL
-50,"CO","COL",170,"Colombia","57",1,NULL
-51,"KM","COM",174,"Comoros","269",1,NULL
-52,"CG","COG",178,"Congo","242",1,NULL
-53,"CD","COD",180,"Congo, the Democratic Republic of the","242",1,NULL
-54,"CK","COK",184,"Cook Islands","682",1,NULL
-55,"CR","CRI",188,"Costa Rica","506",1,NULL
-56,"CI","CIV",384,"Cote D'Ivoire","225",1,NULL
-57,"HR","HRV",191,"Croatia","385",1,NULL
-58,"CU","CUB",192,"Cuba","53",1,NULL
-59,"CW","CUW",531,"Curacao","599",1,NULL
-60,"CY","CYP",196,"Cyprus","357",1,NULL
-61,"CZ","CZE",203,"Czech Republic","420",1,NULL
-62,"DK","DNK",208,"Denmark","45",1,NULL
-63,"DJ","DJI",262,"Djibouti","253",1,NULL
-64,"DM","DMA",212,"Dominica","176",1,NULL
-65,"DO","DOM",214,"Dominican Republic","180",1,NULL
-66,"EC","ECU",218,"Ecuador","593",1,NULL
-67,"EG","EGY",818,"Egypt","20",1,NULL
-68,"SV","SLV",222,"El Salvador","503",1,NULL
-69,"GQ","GNQ",226,"Equatorial Guinea","240",1,NULL
-70,"ER","ERI",232,"Eritrea","291",1,NULL
-71,"EE","EST",233,"Estonia","372",1,NULL
-72,"ET","ETH",231,"Ethiopia","251",1,NULL
-73,"FK","FLK",238,"Falkland Islands (Malvinas)","500",1,NULL
-74,"FO","FRO",234,"Faroe Islands","298",1,NULL
-75,"FJ","FJI",242,"Fiji","679",1,NULL
-76,"FI","FIN",246,"Finland","358",1,NULL
-77,"FR","FRA",250,"France","33",1,NULL
-78,"GF","GUF",254,"French Guiana","594",1,NULL
-79,"PF","PYF",258,"French Polynesia","689",1,NULL
-80,"TF","",NULL,"French Southern Territories","0",1,NULL
-81,"GA","GAB",266,"Gabon","241",1,NULL
-82,"GM","GMB",270,"Gambia","220",1,NULL
-83,"GE","GEO",268,"Georgia","995",1,NULL
-84,"DE","DEU",276,"Germany","49",1,NULL
-85,"GH","GHA",288,"Ghana","233",1,NULL
-86,"GI","GIB",292,"Gibraltar","350",1,NULL
-87,"GR","GRC",300,"Greece","30",1,NULL
-88,"GL","GRL",304,"Greenland","299",1,NULL
-89,"GD","GRD",308,"Grenada","147",1,NULL
-90,"GP","GLP",312,"Guadeloupe","590",1,NULL
-91,"GU","GUM",316,"Guam","167",1,NULL
-92,"GT","GTM",320,"Guatemala","502",1,NULL
-93,"GG","GGY",831,"Guernsey","44",1,NULL
-94,"GN","GIN",324,"Guinea","224",1,NULL
-95,"GW","GNB",624,"Guinea-Bissau","245",1,NULL
-96,"GY","GUY",328,"Guyana","592",1,NULL
-97,"HT","HTI",332,"Haiti","509",1,NULL
-98,"HM","",NULL,"Heard Island and Mcdonald Islands","0",1,NULL
-99,"VA","VAT",336,"Holy See (Vatican City State)","39",1,NULL
-100,"HN","HND",340,"Honduras","504",1,NULL
-101,"HK","HKG",344,"Hong Kong","852",1,NULL
-102,"HU","HUN",348,"Hungary","36",1,NULL
-103,"IS","ISL",352,"Iceland","354",1,NULL
-104,"IN","IND",356,"India","91",1,NULL
-105,"ID","IDN",360,"Indonesia","62",1,NULL
-106,"IR","IRN",364,"Iran, Islamic Republic of","98",1,NULL
-107,"IQ","IRQ",368,"Iraq","964",1,NULL
-108,"IE","IRL",372,"Ireland","353",1,NULL
-109,"IM","IMN",833,"Isle of Man","44",1,NULL
-110,"IL","ISR",376,"Israel","972",1,NULL
-111,"IT","ITA",380,"Italy","39",1,NULL
-112,"JM","JAM",388,"Jamaica","187",1,NULL
-113,"JP","JPN",392,"Japan","81",1,NULL
-114,"JE","JEY",832,"Jersey","44",1,NULL
-115,"JO","JOR",400,"Jordan","962",1,NULL
-116,"KZ","KAZ",398,"Kazakhstan","7",1,NULL
-117,"KE","KEN",404,"Kenya","254",1,NULL
-118,"KI","KIR",296,"Kiribati","686",1,NULL
-119,"KP","PRK",408,"Korea, Democratic People's Republic of","850",1,NULL
-120,"KR","KOR",410,"Korea, Republic of","82",1,NULL
-121,"XK","---",0,"Kosovo","381",1,NULL
-122,"KW","KWT",414,"Kuwait","965",1,NULL
-123,"KG","KGZ",417,"Kyrgyzstan","996",1,NULL
-124,"LA","LAO",418,"Lao People's Democratic Republic","856",1,NULL
-125,"LV","LVA",428,"Latvia","371",1,NULL
-126,"LB","LBN",422,"Lebanon","961",1,NULL
-127,"LS","LSO",426,"Lesotho","266",1,NULL
-128,"LR","LBR",430,"Liberia","231",1,NULL
-129,"LY","LBY",434,"Libyan Arab Jamahiriya","218",1,NULL
-130,"LI","LIE",438,"Liechtenstein","423",1,NULL
-131,"LT","LTU",440,"Lithuania","370",1,NULL
-132,"LU","LUX",442,"Luxembourg","352",1,NULL
-133,"MO","MAC",446,"Macao","853",1,NULL
-134,"MK","MKD",807,"Macedonia, the Former Yugoslav Republic of","389",1,NULL
-135,"MG","MDG",450,"Madagascar","261",1,NULL
-136,"MW","MWI",454,"Malawi","265",1,NULL
-137,"MY","MYS",458,"Malaysia","60",1,NULL
-138,"MV","MDV",462,"Maldives","960",1,NULL
-139,"ML","MLI",466,"Mali","223",1,NULL
-140,"MT","MLT",470,"Malta","356",1,NULL
-141,"MH","MHL",584,"Marshall Islands","692",1,NULL
-142,"MQ","MTQ",474,"Martinique","596",1,NULL
-143,"MR","MRT",478,"Mauritania","222",1,NULL
-144,"MU","MUS",480,"Mauritius","230",1,NULL
-145,"YT","",NULL,"Mayotte","269",1,NULL
-146,"MX","MEX",484,"Mexico","52",1,NULL
-147,"FM","FSM",583,"Micronesia, Federated States of","691",1,NULL
-148,"MD","MDA",498,"Moldova, Republic of","373",1,NULL
-149,"MC","MCO",492,"Monaco","377",1,NULL
-150,"MN","MNG",496,"Mongolia","976",1,NULL
-151,"ME","MNE",499,"Montenegro","382",1,NULL
-152,"MS","MSR",500,"Montserrat","166",1,NULL
-153,"MA","MAR",504,"Morocco","212",1,NULL
-154,"MZ","MOZ",508,"Mozambique","258",1,NULL
-155,"MM","MMR",104,"Myanmar","95",1,NULL
-156,"NA","NAM",516,"Namibia","264",1,NULL
-157,"NR","NRU",520,"Nauru","674",1,NULL
-158,"NP","NPL",524,"Nepal","977",1,NULL
-159,"NL","NLD",528,"Netherlands","31",1,NULL
-160,"AN","ANT",530,"Netherlands Antilles","599",1,NULL
-161,"NC","NCL",540,"New Caledonia","687",1,NULL
-162,"NZ","NZL",554,"New Zealand","64",1,NULL
-163,"NI","NIC",558,"Nicaragua","505",1,NULL
-164,"NE","NER",562,"Niger","227",1,NULL
-165,"NG","NGA",566,"Nigeria","234",1,NULL
-166,"NU","NIU",570,"Niue","683",1,NULL
-167,"NF","NFK",574,"Norfolk Island","672",1,NULL
-168,"MP","MNP",580,"Northern Mariana Islands","167",1,NULL
-169,"NO","NOR",578,"Norway","47",1,NULL
-170,"OM","OMN",512,"Oman","968",1,NULL
-171,"PK","PAK",586,"Pakistan","92",1,NULL
-172,"PW","PLW",585,"Palau","680",1,NULL
-173,"PS","",NULL,"Palestinian Territory, Occupied","970",1,NULL
-174,"PA","PAN",591,"Panama","507",1,NULL
-175,"PG","PNG",598,"Papua New Guinea","675",1,NULL
-176,"PY","PRY",600,"Paraguay","595",1,NULL
-177,"PE","PER",604,"Peru","51",1,NULL
-178,"PH","PHL",608,"Philippines","63",1,NULL
-179,"PN","PCN",612,"Pitcairn","0",1,NULL
-180,"PL","POL",616,"Poland","48",1,NULL
-181,"PT","PRT",620,"Portugal","351",1,NULL
-182,"PR","PRI",630,"Puerto Rico","178",1,NULL
-183,"QA","QAT",634,"Qatar","974",1,NULL
-184,"RE","REU",638,"Reunion","262",1,NULL
-185,"RO","ROM",642,"Romania","40",1,NULL
-186,"RU","RUS",643,"Russian Federation","70",1,NULL
-187,"RW","RWA",646,"Rwanda","250",1,NULL
-188,"BL","BLM",652,"Saint Barthelemy","590",1,NULL
-189,"SH","SHN",654,"Saint Helena","290",1,NULL
-190,"KN","KNA",659,"Saint Kitts and Nevis","186",1,NULL
-191,"LC","LCA",662,"Saint Lucia","175",1,NULL
-192,"MF","MAF",663,"Saint Martin","590",1,NULL
-193,"PM","SPM",666,"Saint Pierre and Miquelon","508",1,NULL
-194,"VC","VCT",670,"Saint Vincent and the Grenadines","178",1,NULL
-195,"WS","WSM",882,"Samoa","684",1,NULL
-196,"SM","SMR",674,"San Marino","378",1,NULL
-197,"ST","STP",678,"Sao Tome and Principe","239",1,NULL
-198,"SA","SAU",682,"Saudi Arabia","966",1,NULL
-199,"SN","SEN",686,"Senegal","221",1,NULL
-200,"RS","SRB",688,"Serbia","381",1,NULL
-201,"CS","",NULL,"Serbia and Montenegro","381",1,NULL
-202,"SC","SYC",690,"Seychelles","248",1,NULL
-203,"SL","SLE",694,"Sierra Leone","232",1,NULL
-204,"SG","SGP",702,"Singapore","65",1,NULL
-205,"SX","SXM",534,"Sint Maarten","1",1,NULL
-206,"SK","SVK",703,"Slovakia","421",1,NULL
-207,"SI","SVN",705,"Slovenia","386",1,NULL
-208,"SB","SLB",90,"Solomon Islands","677",1,NULL
-209,"SO","SOM",706,"Somalia","252",1,NULL
-210,"ZA","ZAF",710,"South Africa","27",1,NULL
-211,"GS","",NULL,"South Georgia and the South Sandwich Islands","0",1,NULL
-212,"SS","SSD",728,"South Sudan","211",1,NULL
-213,"ES","ESP",724,"Spain","34",1,NULL
-214,"LK","LKA",144,"Sri Lanka","94",1,NULL
-215,"SD","SDN",736,"Sudan","249",1,NULL
-216,"SR","SUR",740,"Suriname","597",1,NULL
-217,"SJ","SJM",744,"Svalbard and Jan Mayen","47",1,NULL
-218,"SZ","SWZ",748,"Swaziland","268",1,NULL
-219,"SE","SWE",752,"Sweden","46",1,NULL
-220,"CH","CHE",756,"Switzerland","41",1,NULL
-221,"SY","SYR",760,"Syrian Arab Republic","963",1,NULL
-222,"TW","TWN",158,"Taiwan, Province of China","886",1,NULL
-223,"TJ","TJK",762,"Tajikistan","992",1,NULL
-224,"TZ","TZA",834,"Tanzania, United Republic of","255",1,NULL
-225,"TH","THA",764,"Thailand","66",1,NULL
-226,"TL","",NULL,"Timor-Leste","670",1,NULL
-227,"TG","TGO",768,"Togo","228",1,NULL
-228,"TK","TKL",772,"Tokelau","690",1,NULL
-229,"TO","TON",776,"Tonga","676",1,NULL
-230,"TT","TTO",780,"Trinidad and Tobago","186",1,NULL
-231,"TN","TUN",788,"Tunisia","216",1,NULL
-232,"TR","TUR",792,"Turkey","90",1,NULL
-233,"TM","TKM",795,"Turkmenistan","737",1,NULL
-234,"TC","TCA",796,"Turks and Caicos Islands","164",1,NULL
-235,"TV","TUV",798,"Tuvalu","688",1,NULL
-236,"UG","UGA",800,"Uganda","256",1,NULL
-237,"UA","UKR",804,"Ukraine","380",1,NULL
-238,"AE","ARE",784,"United Arab Emirates","971",1,NULL
-239,"GB","GBR",826,"United Kingdom","44",1,NULL
-240,"US","USA",840,"United States","1",1,NULL
-241,"UM","",NULL,"United States Minor Outlying Islands","1",1,NULL
-242,"UY","URY",858,"Uruguay","598",1,NULL
-243,"UZ","UZB",860,"Uzbekistan","998",1,NULL
-244,"VU","VUT",548,"Vanuatu","678",1,NULL
-245,"VE","VEN",862,"Venezuela","58",1,NULL
-246,"VN","VNM",704,"Viet Nam","84",1,NULL
-247,"VG","VGB",92,"Virgin Islands, British","128",1,NULL
-248,"VI","VIR",850,"Virgin Islands, U.s.","134",1,NULL
-249,"WF","WLF",876,"Wallis and Futuna","681",1,NULL
-250,"EH","ESH",732,"Western Sahara","212",1,NULL
-251,"YE","YEM",887,"Yemen","967",1,NULL
-252,"ZM","ZMB",894,"Zambia","260",1,NULL
-253,"ZW","ZWE",716,"Zimbabwe","263",1,NULL
+id,iso2,iso3,numcode,name,phonecode,op_id,status_id
+1,AF,AFG,4,Afghanistan,93,1,1
+2,AX,ALA,248,Aland Islands,358,1,1
+3,AL,ALB,8,Albania,355,1,1
+4,DZ,DZA,12,Algeria,213,1,1
+5,AS,ASM,16,American Samoa,168,1,1
+6,AD,AND,20,Andorra,376,1,1
+7,AO,AGO,24,Angola,244,1,1
+8,AI,AIA,660,Anguilla,126,1,1
+9,AQ,,0,Antarctica,0,1,1
+10,AG,ATG,28,Antigua and Barbuda,126,1,1
+11,AR,ARG,32,Argentina,54,1,1
+12,AM,ARM,51,Armenia,374,1,1
+13,AW,ABW,533,Aruba,297,1,1
+14,AP,0,0,Asia / Pacific Region,0,1,1
+15,AU,AUS,36,Australia,61,1,1
+16,AT,AUT,40,Austria,43,1,1
+17,AZ,AZE,31,Azerbaijan,994,1,1
+18,BS,BHS,44,Bahamas,124,1,1
+19,BH,BHR,48,Bahrain,973,1,1
+20,BD,BGD,50,Bangladesh,880,1,1
+21,BB,BRB,52,Barbados,124,1,1
+22,BY,BLR,112,Belarus,375,1,1
+23,BE,BEL,56,Belgium,32,1,1
+24,BZ,BLZ,84,Belize,501,1,1
+25,BJ,BEN,204,Benin,229,1,1
+26,BM,BMU,60,Bermuda,144,1,1
+27,BT,BTN,64,Bhutan,975,1,1
+28,BO,BOL,68,Bolivia,591,1,1
+29,BQ,BES,535,"Bonaire, Sint Eustatius and Saba",599,1,1
+30,BA,BIH,70,Bosnia and Herzegovina,387,1,1
+31,BW,BWA,72,Botswana,267,1,1
+32,BV,,0,Bouvet Island,0,1,1
+33,BR,BRA,76,Brazil,55,1,1
+34,IO,,0,British Indian Ocean Territory,246,1,1
+35,BN,BRN,96,Brunei Darussalam,673,1,1
+36,BG,BGR,100,Bulgaria,359,1,1
+37,BF,BFA,854,Burkina Faso,226,1,1
+38,BI,BDI,108,Burundi,257,1,1
+39,KH,KHM,116,Cambodia,855,1,1
+40,CM,CMR,120,Cameroon,237,1,1
+41,CA,CAN,124,Canada,1,1,1
+42,CV,CPV,132,Cape Verde,238,1,1
+43,KY,CYM,136,Cayman Islands,134,1,1
+44,CF,CAF,140,Central African Republic,236,1,1
+45,TD,TCD,148,Chad,235,1,1
+46,CL,CHL,152,Chile,56,1,1
+47,CN,CHN,156,China,86,1,1
+48,CX,,0,Christmas Island,61,1,1
+49,CC,,0,Cocos (Keeling) Islands,672,1,1
+50,CO,COL,170,Colombia,57,1,1
+51,KM,COM,174,Comoros,269,1,1
+52,CG,COG,178,Congo,242,1,1
+53,CD,COD,180,"Congo, the Democratic Republic of the",242,1,1
+54,CK,COK,184,Cook Islands,682,1,1
+55,CR,CRI,188,Costa Rica,506,1,1
+56,CI,CIV,384,Cote D'Ivoire,225,1,1
+57,HR,HRV,191,Croatia,385,1,1
+58,CU,CUB,192,Cuba,53,1,1
+59,CW,CUW,531,Curacao,599,1,1
+60,CY,CYP,196,Cyprus,357,1,1
+61,CZ,CZE,203,Czech Republic,420,1,1
+62,DK,DNK,208,Denmark,45,1,1
+63,DJ,DJI,262,Djibouti,253,1,1
+64,DM,DMA,212,Dominica,176,1,1
+65,DO,DOM,214,Dominican Republic,180,1,1
+66,EC,ECU,218,Ecuador,593,1,1
+67,EG,EGY,818,Egypt,20,1,1
+68,SV,SLV,222,El Salvador,503,1,1
+69,GQ,GNQ,226,Equatorial Guinea,240,1,1
+70,ER,ERI,232,Eritrea,291,1,1
+71,EE,EST,233,Estonia,372,1,1
+72,ET,ETH,231,Ethiopia,251,1,1
+73,FK,FLK,238,Falkland Islands (Malvinas),500,1,1
+74,FO,FRO,234,Faroe Islands,298,1,1
+75,FJ,FJI,242,Fiji,679,1,1
+76,FI,FIN,246,Finland,358,1,1
+77,FR,FRA,250,France,33,1,1
+78,GF,GUF,254,French Guiana,594,1,1
+79,PF,PYF,258,French Polynesia,689,1,1
+80,TF,,0,French Southern Territories,0,1,1
+81,GA,GAB,266,Gabon,241,1,1
+82,GM,GMB,270,Gambia,220,1,1
+83,GE,GEO,268,Georgia,995,1,1
+84,DE,DEU,276,Germany,49,1,1
+85,GH,GHA,288,Ghana,233,1,1
+86,GI,GIB,292,Gibraltar,350,1,1
+87,GR,GRC,300,Greece,30,1,1
+88,GL,GRL,304,Greenland,299,1,1
+89,GD,GRD,308,Grenada,147,1,1
+90,GP,GLP,312,Guadeloupe,590,1,1
+91,GU,GUM,316,Guam,167,1,1
+92,GT,GTM,320,Guatemala,502,1,1
+93,GG,GGY,831,Guernsey,44,1,1
+94,GN,GIN,324,Guinea,224,1,1
+95,GW,GNB,624,Guinea-Bissau,245,1,1
+96,GY,GUY,328,Guyana,592,1,1
+97,HT,HTI,332,Haiti,509,1,1
+98,HM,,0,Heard Island and Mcdonald Islands,0,1,1
+99,VA,VAT,336,Holy See (Vatican City State),39,1,1
+100,HN,HND,340,Honduras,504,1,1
+101,HK,HKG,344,Hong Kong,852,1,1
+102,HU,HUN,348,Hungary,36,1,1
+103,IS,ISL,352,Iceland,354,1,1
+104,IN,IND,356,India,91,1,1
+105,ID,IDN,360,Indonesia,62,1,1
+106,IR,IRN,364,"Iran, Islamic Republic of",98,1,1
+107,IQ,IRQ,368,Iraq,964,1,1
+108,IE,IRL,372,Ireland,353,1,1
+109,IM,IMN,833,Isle of Man,44,1,1
+110,IL,ISR,376,Israel,972,1,1
+111,IT,ITA,380,Italy,39,1,1
+112,JM,JAM,388,Jamaica,187,1,1
+113,JP,JPN,392,Japan,81,1,1
+114,JE,JEY,832,Jersey,44,1,1
+115,JO,JOR,400,Jordan,962,1,1
+116,KZ,KAZ,398,Kazakhstan,7,1,1
+117,KE,KEN,404,Kenya,254,1,1
+118,KI,KIR,296,Kiribati,686,1,1
+119,KP,PRK,408,"Korea, Democratic People's Republic of",850,1,1
+120,KR,KOR,410,"Korea, Republic of",82,1,1
+121,XK,---,0,Kosovo,381,1,1
+122,KW,KWT,414,Kuwait,965,1,1
+123,KG,KGZ,417,Kyrgyzstan,996,1,1
+124,LA,LAO,418,Lao People's Democratic Republic,856,1,1
+125,LV,LVA,428,Latvia,371,1,1
+126,LB,LBN,422,Lebanon,961,1,1
+127,LS,LSO,426,Lesotho,266,1,1
+128,LR,LBR,430,Liberia,231,1,1
+129,LY,LBY,434,Libyan Arab Jamahiriya,218,1,1
+130,LI,LIE,438,Liechtenstein,423,1,1
+131,LT,LTU,440,Lithuania,370,1,1
+132,LU,LUX,442,Luxembourg,352,1,1
+133,MO,MAC,446,Macao,853,1,1
+134,MK,MKD,807,"Macedonia, the Former Yugoslav Republic of",389,1,1
+135,MG,MDG,450,Madagascar,261,1,1
+136,MW,MWI,454,Malawi,265,1,1
+137,MY,MYS,458,Malaysia,60,1,1
+138,MV,MDV,462,Maldives,960,1,1
+139,ML,MLI,466,Mali,223,1,1
+140,MT,MLT,470,Malta,356,1,1
+141,MH,MHL,584,Marshall Islands,692,1,1
+142,MQ,MTQ,474,Martinique,596,1,1
+143,MR,MRT,478,Mauritania,222,1,1
+144,MU,MUS,480,Mauritius,230,1,1
+145,YT,,0,Mayotte,269,1,1
+146,MX,MEX,484,Mexico,52,1,1
+147,FM,FSM,583,"Micronesia, Federated States of",691,1,1
+148,MD,MDA,498,"Moldova, Republic of",373,1,1
+149,MC,MCO,492,Monaco,377,1,1
+150,MN,MNG,496,Mongolia,976,1,1
+151,ME,MNE,499,Montenegro,382,1,1
+152,MS,MSR,500,Montserrat,166,1,1
+153,MA,MAR,504,Morocco,212,1,1
+154,MZ,MOZ,508,Mozambique,258,1,1
+155,MM,MMR,104,Myanmar,95,1,1
+156,NA,NAM,516,Namibia,264,1,1
+157,NR,NRU,520,Nauru,674,1,1
+158,NP,NPL,524,Nepal,977,1,1
+159,NL,NLD,528,Netherlands,31,1,1
+160,AN,ANT,530,Netherlands Antilles,599,1,1
+161,NC,NCL,540,New Caledonia,687,1,1
+162,NZ,NZL,554,New Zealand,64,1,1
+163,NI,NIC,558,Nicaragua,505,1,1
+164,NE,NER,562,Niger,227,1,1
+165,NG,NGA,566,Nigeria,234,1,1
+166,NU,NIU,570,Niue,683,1,1
+167,NF,NFK,574,Norfolk Island,672,1,1
+168,MP,MNP,580,Northern Mariana Islands,167,1,1
+169,NO,NOR,578,Norway,47,1,1
+170,OM,OMN,512,Oman,968,1,1
+171,PK,PAK,586,Pakistan,92,1,1
+172,PW,PLW,585,Palau,680,1,1
+173,PS,,0,"Palestinian Territory, Occupied",970,1,1
+174,PA,PAN,591,Panama,507,1,1
+175,PG,PNG,598,Papua New Guinea,675,1,1
+176,PY,PRY,600,Paraguay,595,1,1
+177,PE,PER,604,Peru,51,1,1
+178,PH,PHL,608,Philippines,63,1,1
+179,PN,PCN,612,Pitcairn,0,1,1
+180,PL,POL,616,Poland,48,1,1
+181,PT,PRT,620,Portugal,351,1,1
+182,PR,PRI,630,Puerto Rico,178,1,1
+183,QA,QAT,634,Qatar,974,1,1
+184,RE,REU,638,Reunion,262,1,1
+185,RO,ROM,642,Romania,40,1,1
+186,RU,RUS,643,Russian Federation,70,1,1
+187,RW,RWA,646,Rwanda,250,1,1
+188,BL,BLM,652,Saint Barthelemy,590,1,1
+189,SH,SHN,654,Saint Helena,290,1,1
+190,KN,KNA,659,Saint Kitts and Nevis,186,1,1
+191,LC,LCA,662,Saint Lucia,175,1,1
+192,MF,MAF,663,Saint Martin,590,1,1
+193,PM,SPM,666,Saint Pierre and Miquelon,508,1,1
+194,VC,VCT,670,Saint Vincent and the Grenadines,178,1,1
+195,WS,WSM,882,Samoa,684,1,1
+196,SM,SMR,674,San Marino,378,1,1
+197,ST,STP,678,Sao Tome and Principe,239,1,1
+198,SA,SAU,682,Saudi Arabia,966,1,1
+199,SN,SEN,686,Senegal,221,1,1
+200,RS,SRB,688,Serbia,381,1,1
+201,CS,,0,Serbia and Montenegro,381,1,1
+202,SC,SYC,690,Seychelles,248,1,1
+203,SL,SLE,694,Sierra Leone,232,1,1
+204,SG,SGP,702,Singapore,65,1,1
+205,SX,SXM,534,Sint Maarten,1,1,1
+206,SK,SVK,703,Slovakia,421,1,1
+207,SI,SVN,705,Slovenia,386,1,1
+208,SB,SLB,90,Solomon Islands,677,1,1
+209,SO,SOM,706,Somalia,252,1,1
+210,ZA,ZAF,710,South Africa,27,1,1
+211,GS,,0,South Georgia and the South Sandwich Islands,0,1,1
+212,SS,SSD,728,South Sudan,211,1,1
+213,ES,ESP,724,Spain,34,1,1
+214,LK,LKA,144,Sri Lanka,94,1,1
+215,SD,SDN,736,Sudan,249,1,1
+216,SR,SUR,740,Suriname,597,1,1
+217,SJ,SJM,744,Svalbard and Jan Mayen,47,1,1
+218,SZ,SWZ,748,Swaziland,268,1,1
+219,SE,SWE,752,Sweden,46,1,1
+220,CH,CHE,756,Switzerland,41,1,1
+221,SY,SYR,760,Syrian Arab Republic,963,1,1
+222,TW,TWN,158,"Taiwan, Province of China",886,1,1
+223,TJ,TJK,762,Tajikistan,992,1,1
+224,TZ,TZA,834,"Tanzania, United Republic of",255,1,1
+225,TH,THA,764,Thailand,66,1,1
+226,TL,,0,Timor-Leste,670,1,1
+227,TG,TGO,768,Togo,228,1,1
+228,TK,TKL,772,Tokelau,690,1,1
+229,TO,TON,776,Tonga,676,1,1
+230,TT,TTO,780,Trinidad and Tobago,186,1,1
+231,TN,TUN,788,Tunisia,216,1,1
+232,TR,TUR,792,Turkey,90,1,1
+233,TM,TKM,795,Turkmenistan,737,1,1
+234,TC,TCA,796,Turks and Caicos Islands,164,1,1
+235,TV,TUV,798,Tuvalu,688,1,1
+236,UG,UGA,800,Uganda,256,1,1
+237,UA,UKR,804,Ukraine,380,1,1
+238,AE,ARE,784,United Arab Emirates,971,1,1
+239,GB,GBR,826,United Kingdom,44,1,1
+240,US,USA,840,United States,1,1,1
+241,UM,,0,United States Minor Outlying Islands,1,1,1
+242,UY,URY,858,Uruguay,598,1,1
+243,UZ,UZB,860,Uzbekistan,998,1,1
+244,VU,VUT,548,Vanuatu,678,1,1
+245,VE,VEN,862,Venezuela,58,1,1
+246,VN,VNM,704,Viet Nam,84,1,1
+247,VG,VGB,92,"Virgin Islands, British",128,1,1
+248,VI,VIR,850,"Virgin Islands, U.s.",134,1,1
+249,WF,WLF,876,Wallis and Futuna,681,1,1
+250,EH,ESH,732,Western Sahara,212,1,1
+251,YE,YEM,887,Yemen,967,1,1
+252,ZM,ZMB,894,Zambia,260,1,1
+253,ZW,ZWE,716,Zimbabwe,263,1,1
