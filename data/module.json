@@ -215,6 +215,8 @@
         "table_scopes": [
             "trans",
             "transItem",
+            "transItemDisc",
+            "transItemTax",
             "transPayment"
         ]
     },
@@ -227,6 +229,8 @@
         "table_scopes": [
             "trans",
             "transItem",
+            "transItemDisc",
+            "transItemTax",
             "transPayment"
         ]
     },
@@ -239,6 +243,8 @@
         "table_scopes": [
             "trans",
             "transItem",
+            "transItemDisc",
+            "transItemTax",
             "transPayment"
         ]
     },
