@@ -81,6 +81,15 @@ const urlCheck = async function (param, method, query = {}, body = {}) {
         param.where = filter;
         param.offset = parseInt(query.offset) || 0;
         param.limit = parseInt(query.limit) || 100;
+        try {
+        	let sort = JSON.parse(query.sort)
+        	param.sort = sort.map(function(el) {
+        		return `\`${el.property}\` ${el.direction || 'ASC'}`
+        	}).join(', ');
+        	if (param.sort.length) param.sort = 'ORDER BY ' + param.sort
+        } catch (e) {
+        	//
+        }
     }
     return {param, error}
 };
@@ -220,6 +229,7 @@ module.exports = function ({Glob, locals, compile}) {
                 });
                 sql = qbuilder(param);
                 request = {method, body, query, sql: sql.raw};
+                sql.raw = param.sort ? sql.raw.replace('limit', param.sort + ' limit') : sql.raw;
                 result = await compile(sql.raw);
                 total = await compile(sums.raw);
             } else {
