@@ -141,7 +141,7 @@ const getUpJoin = async function (name, alias) {
 
         if (i) {
             join = {
-                type: 'left',
+                // type: 'left',
                 target: table_name,
                 alias: 'r' + i,
                 on: {[relate.column_ref]: `$z.${relate.column}$`}
