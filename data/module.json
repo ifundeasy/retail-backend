@@ -25,7 +25,8 @@
         "parent_id": null,
         "name": "Report",
         "class": null,
-        "seq": 6
+        "seq": 6,
+        "collapsed": "1"
     },
     {
         "id": 5,
@@ -90,49 +91,59 @@
     {
         "id": 11,
         "parent_id": 1,
-        "name": "Brand",
-        "class": "master.brand",
+        "name": "Convertion",
+        "class": "master.unitConv",
         "seq": 7,
         "table_scopes": [
-            "brand"
+            "unitConvertion"
         ]
     },
     {
         "id": 12,
         "parent_id": 1,
-        "name": "Code",
-        "class": "master.code",
+        "name": "Brand",
+        "class": "master.brand",
         "seq": 8,
         "table_scopes": [
-            "code"
+            "brand"
         ]
     },
     {
         "id": 13,
         "parent_id": 1,
-        "name": "Taxes",
-        "class": "master.taxes",
+        "name": "Code",
+        "class": "master.code",
         "seq": 9,
         "table_scopes": [
-            "tax"
+            "code"
         ]
     },
     {
         "id": 14,
         "parent_id": 1,
-        "name": "Discount",
-        "class": "master.discount",
+        "name": "Taxes",
+        "class": "master.taxes",
         "seq": 10,
         "table_scopes": [
-            "discount"
+            "tax"
         ]
     },
     {
         "id": 15,
         "parent_id": 1,
-        "name": "Product",
-        "class": "master.product",
+        "name": "Discount",
+        "class": "master.discount",
         "seq": 11,
+        "table_scopes": [
+            "discount"
+        ]
+    },
+    {
+        "id": 16,
+        "parent_id": 1,
+        "name": "Goods & Services",
+        "class": "master.product",
+        "seq": 12,
         "table_scopes": [
             "product",
             "productCode",
@@ -144,14 +155,15 @@
         ]
     },
     {
-        "id": 16,
+        "id": 17,
         "parent_id": 1,
         "name": "Location",
         "class": null,
-        "seq": 12
+        "seq": 13,
+        "collapsed": "1"
     },
     {
-        "id": 17,
+        "id": 18,
         "parent_id": 2,
         "name": "Request Method",
         "class": "role.reqmethod",
@@ -161,7 +173,7 @@
         ]
     },
     {
-        "id": 18,
+        "id": 19,
         "parent_id": 2,
         "name": "Module",
         "class": "role.module",
@@ -172,7 +184,7 @@
         ]
     },
     {
-        "id": 19,
+        "id": 20,
         "parent_id": 2,
         "name": "Actor",
         "class": "role.actor",
@@ -182,9 +194,9 @@
         ]
     },
     {
-        "id": 20,
+        "id": 21,
         "parent_id": 2,
-        "name": "Actor Privileges",
+        "name": "Privileges",
         "class": "role.privilege",
         "seq": 5,
         "table_scopes": [
@@ -192,7 +204,7 @@
         ]
     },
     {
-        "id": 21,
+        "id": 22,
         "parent_id": 2,
         "name": "Account",
         "class": "role.account",
@@ -207,7 +219,7 @@
         ]
     },
     {
-        "id": 22,
+        "id": 23,
         "parent_id": 3,
         "name": "Operational",
         "class": "transc.operation",
@@ -221,7 +233,7 @@
         ]
     },
     {
-        "id": 23,
+        "id": 24,
         "parent_id": 3,
         "name": "Purchase",
         "class": "transc.purchase",
@@ -235,7 +247,7 @@
         ]
     },
     {
-        "id": 24,
+        "id": 25,
         "parent_id": 3,
         "name": "Sales",
         "class": "transc.sales",
@@ -249,7 +261,7 @@
         ]
     },
     {
-        "id": 25,
+        "id": 26,
         "parent_id": 4,
         "name": "Operational",
         "class": "report.operation",
@@ -257,7 +269,7 @@
         "table_scopes": []
     },
     {
-        "id": 26,
+        "id": 27,
         "parent_id": 4,
         "name": "Purchase",
         "class": "report.purchase",
@@ -265,7 +277,7 @@
         "table_scopes": []
     },
     {
-        "id": 27,
+        "id": 28,
         "parent_id": 4,
         "name": "Sales",
         "class": "report.sales",
@@ -273,7 +285,7 @@
         "table_scopes": []
     },
     {
-        "id": 28,
+        "id": 29,
         "parent_id": 4,
         "name": "Profit",
         "class": "report.profit",
@@ -281,8 +293,8 @@
         "table_scopes": []
     },
     {
-        "id": 29,
-        "parent_id": 16,
+        "id": 30,
+        "parent_id": 17,
         "name": "National",
         "class": "location.national",
         "seq": 1,
@@ -291,8 +303,8 @@
         ]
     },
     {
-        "id": 30,
-        "parent_id": 16,
+        "id": 31,
+        "parent_id": 17,
         "name": "State",
         "class": "location.state",
         "seq": 2,
@@ -301,8 +313,8 @@
         ]
     },
     {
-        "id": 31,
-        "parent_id": 16,
+        "id": 32,
+        "parent_id": 17,
         "name": "Regency",
         "class": "location.regency",
         "seq": 3,
@@ -311,8 +323,8 @@
         ]
     },
     {
-        "id": 32,
-        "parent_id": 16,
+        "id": 33,
+        "parent_id": 17,
         "name": "District",
         "class": "location.district",
         "seq": 4,
@@ -321,8 +333,8 @@
         ]
     },
     {
-        "id": 33,
-        "parent_id": 16,
+        "id": 34,
+        "parent_id": 17,
         "name": "Village",
         "class": "location.village",
         "seq": 5,

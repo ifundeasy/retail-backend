@@ -35,7 +35,7 @@ const HttpMethod = {
     ]
 };
 const Module = {
-    fields: ['id', 'module_id', 'name', 'class', 'seq'],
+    fields: ['id', 'module_id', 'name', 'class', 'seq', 'collapsed'],
     values: []
 };
 const ModuleRoute = {
@@ -50,11 +50,11 @@ const ActorModule = {
 const tables = {};
 moduleMap.forEach(function (obj) {
     let p = Module.fields.length;
-    Module.values.push(
-        Object.keys(obj).slice(0, p).map(function (el) {
-            return obj[el]
-        })
-    );
+    let data = Module.fields.map(function (el) {
+        if (el === 'module_id') return obj['parent_id'] || null;
+        return obj[el] || null
+    });
+    Module.values.push(data);
     ActorModule.values.push([ActorModule.values.length + 1, 1, obj.id]);
     if (obj.table_scopes instanceof Array) {
         obj.table_scopes.forEach(function (name) {

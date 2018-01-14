@@ -7,7 +7,8 @@ module.exports = function (compile) {
             SELECT 
                 a.id actor_id, a.name actor_name, b.module_id,
                 c.module_id module_parent, c.name module_name, 
-                c.class module_class, c.seq module_seq, c.notes module_notes,
+                c.class module_class, c.seq module_seq, c.collapsed module_collapsed,
+                c.notes module_notes,
                 d.TABLENAME, d.value route, d.httpmethod_id, 
                 e.name httpmethod_name, e.code httpmethod_code
             FROM personActor z
@@ -27,7 +28,8 @@ module.exports = function (compile) {
             let role = roleData[a];
             let {
                 module_id, module_parent, module_name,
-                module_class, module_seq, module_notes
+                module_class, module_seq, module_collapsed,
+                module_notes
             } = role;
 
             if (role.route) {
@@ -42,6 +44,7 @@ module.exports = function (compile) {
                 name: module_name,
                 class: module_class,
                 seq: module_seq,
+                collapsed: module_collapsed,
                 notes: module_notes,
                 tables: []
             };
