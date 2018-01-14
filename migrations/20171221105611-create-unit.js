@@ -18,19 +18,6 @@ exports.up = function (queryInterface, sequelize) {
             allowNull: false,
             defaultValue: ''
         },
-        value: {
-            type: "DOUBLE",
-            allowNull: false,
-            defaultValue: '1'
-        },
-        unit_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: true,
-            reff: {
-                model: 'unit',
-                key: 'id'
-            }
-        },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
