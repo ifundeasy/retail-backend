@@ -45,7 +45,8 @@ const urlCheck = async function (param, method, query = {}, body = {}) {
             let {id} = condition;
 
             columns.forEach(function (field) {
-                data[field] = row[field];
+            	if (field.slice(-3) === '_id' && !row[field]) data[field] = null 
+                else data[field] = row[field];
             });
             data.op_id = 1;
 
