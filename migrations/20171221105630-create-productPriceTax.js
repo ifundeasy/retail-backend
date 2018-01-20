@@ -8,11 +8,6 @@ exports.up = function (queryInterface, sequelize) {
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
-            type: sequelize.STRING(30),
-            allowNull: false,
-            defaultValue: ''
-        },
         productPrice_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
