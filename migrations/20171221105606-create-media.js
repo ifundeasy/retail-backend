@@ -22,6 +22,10 @@ exports.up = function (queryInterface, sequelize) {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false
         },
+        location: {
+            type: sequelize.STRING(255),
+            allowNull: true
+        },
         op_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
