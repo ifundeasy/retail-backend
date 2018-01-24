@@ -11,89 +11,6 @@ const jsonParse = function (string) {
         return e
     }
 };
-const urlCheck = async function (param, method, query = {}, body = {}) {
-    let filter, error = [];
-    let columns = await describeColumns(param.table);
-    if (['POST', 'PUT'].indexOf(method) > -1 && !Object.keys(body).length) {
-        error.push('body payloads value');
-    }
-    if (query.hasOwnProperty('filter') && method !== 'POST') {
-        filter = jsonParse(query.filter);
-        if (!filter) error.push(filter.message);
-        if (!Object.keys(filter).length) error.push('query string for filter value');
-    }
-    if (error.length) error = new Error(`Invalid ${error.join(',')}`);
-    if (method === 'POST') {
-        body = body.constructor === Object ? [body] : body;
-        param.type = 'insert';
-        param.values = body.map(function (row) {
-            let data = {};
-
-            columns.forEach(function (field) {
-                if (row[field]) data[field] = row[field];
-            });
-            data.op_id = 1;
-
-            return data
-        });
-    } else if (method === 'PUT') {
-        param.operations = [];
-        body = body.constructor === Object ? [body] : body;
-        body.forEach(function (row) {
-            let data = {};
-            let condition = row._;
-            let {id} = condition;
-
-            columns.forEach(function (field) {
-            	if (field.slice(-3) === '_id' && !row[field]) data[field] = null 
-                else data[field] = row[field];
-            });
-            data.op_id = 1;
-
-            if (condition.hasOwnProperty('id') && id) {
-                param.operations.push({
-                    type: 'update',
-                    updates: data,
-                    where: {id}
-                })
-            } else {
-                param.operations.push({
-                    type: 'insert',
-                    values: data
-                })
-            }
-        });
-    } else if (method === 'DELETE') {
-        body = body.constructor === Object ? [body] : body;
-        param.type = 'update';
-        let $in = body.filter(function (o) {
-            if (o.id) return 1
-            return 0;
-        }).map(function (o) {
-            return o.id
-        });
-        param.updates = {op_id: 2};
-        param.where = {id: {$in}};
-    } else if (method === 'GET') {
-        filter = filter || {};
-        filter.op_id = 1;
-        param.alias = 'z';
-        param.type = 'select';
-        param.where = filter;
-        param.offset = parseInt(query.offset) || 0;
-        param.limit = parseInt(query.limit) || 100;
-        try {
-        	let sort = JSON.parse(query.sort)
-        	param.sort = sort.map(function(el) {
-        		return `\`${el.property}\` ${el.direction || 'ASC'}`
-        	}).join(', ');
-        	if (param.sort.length) param.sort = 'ORDER BY ' + param.sort
-        } catch (e) {
-        	//
-        }
-    }
-    return {param, error}
-};
 const describeColumns = async function (name) {
     let columns = await _temp.compileFn(`DESCRIBE \`${name}\``);
     return columns.map(function (row) {
@@ -129,9 +46,9 @@ const getRelation = async function (name, mode) {
     });
     return !mode ? {up, down} : mode === 'up' ? up : down;
 };
-const getUpJoin = async function (name, alias) {
-    let upRelation = await getRelation(name, 'up');
-    let mapper = [name].concat(upRelation);
+const getParentRelations = async function (name, alias) {
+    let parents = await getRelation(name, 'up');
+    let mapper = [name].concat(parents);
     let columns = [], joins = [];
 
     await Promise.map(mapper, async function (relate, i) {
@@ -173,14 +90,110 @@ const getUpJoin = async function (name, alias) {
         })
     });
 
-    return {columns, joins, upRelation}
+    return {columns, joins, parents}
+};
+const setQuery = async function (object, method, query = {}, body = {}) {
+    let filter, error = [], {table} = object,
+        columns = await describeColumns(object.table);
+
+    if (['POST', 'PUT'].indexOf(method) > -1 && !Object.keys(body).length) {
+        error.push('body payloads value');
+    }
+    if (query.hasOwnProperty('filter') && method !== 'POST') {
+        filter = jsonParse(query.filter);
+        if (!filter) error.push(filter.message);
+        if (!Object.keys(filter).length) error.push('query string for filter value');
+    }
+    if (error.length) return new Error(`Invalid ${error.join(',')}`);
+    //
+    if (method === 'POST') {
+        body = body.constructor === Object ? [body] : body;
+        object.type = 'insert';
+        object.values = body.map(function (row) {
+            let data = {};
+
+            columns.forEach(function (field) {
+                if (row[field]) data[field] = row[field];
+            });
+            data.op_id = 1;
+
+            return data
+        });
+    } else if (method === 'PUT') {
+        object.operations = [];
+        body = body.constructor === Object ? [body] : body;
+        body.forEach(function (row) {
+            let data = {};
+            let condition = row._;
+            let {id} = condition;
+            columns.forEach(function (field) {
+                if (row.hasOwnProperty(field)) {
+                    if (((field.slice(-3) === '_id') && !row[field]) || !row[field]) data[field] = null;
+                    else data[field] = row[field]
+                }
+            });
+            data.op_id = 1;
+
+            if (condition.hasOwnProperty('id') && id) {
+                object.operations.push({
+                    table: table,
+                    type: 'update',
+                    updates: data,
+                    where: {id}
+                })
+            } else {
+                object.operations.push({
+                    table: table,
+                    type: 'insert',
+                    values: data
+                })
+            }
+        });
+    } else if (method === 'DELETE') {
+        body = body.constructor === Object ? [body] : body;
+        object.type = 'update';
+        let $in = body.filter(function (o) {
+            if (o.id) return 1;
+            return 0;
+        }).map(function (o) {
+            return o.id
+        });
+        object.updates = {op_id: 2};
+        object.where = {id: {$in}};
+    } else if (method === 'GET') {
+        let parents;
+
+        filter = filter || {};
+        filter.op_id = 1;
+        object.alias = 'z';
+        object.type = 'select';
+        object.where = filter;
+        object.offset = parseInt(query.offset) || 0;
+        object.limit = parseInt(query.limit) || 100;
+        try {
+            let sorter = JSON.parse(query.sort);
+            if (sorter.length) {
+                object.order = {};
+                sorter.forEach(function (sort) {
+                    let {property, direction} = sort;
+                    object.order[property] = direction.toLowerCase();
+                });
+            }
+        } catch (e) {
+            //
+        }
+        parents = await getParentRelations(table, object.alias);
+        object.columns = parents.columns;
+        object.joins = parents.joins;
+    }
+    return object
 };
 //
 module.exports = function ({Glob, locals, compile}) {
     const httpCode = require(`${Glob.home}/utils/http.code`);
     const qbuilder = require(`${Glob.home}/utils/query.builder`);
     const {name} = locals;
-    const middleware = async function (req, res, next) {
+    const authorizing = async function (req, res, next) {
         let {method, query, body} = req,
             {routes} = req.logged,
             {name} = req.params,
@@ -188,69 +201,21 @@ module.exports = function ({Glob, locals, compile}) {
             reqUrl = '/api' + req._parsedUrl.pathname;
 
         try {
-            let param;
             if (Glob.tables.indexOf(name) === -1) {
-                throw new Error(`Invalid route name for /api/${name}`);
-            } else param = {table: name};
-            if (!routes.hasOwnProperty(reqUrl)) throw new Error(`You can't access /api/${name} route`);
+                throw new Error(`Invalid route name for ${reqUrl}`);
+            }
+            if (!routes.hasOwnProperty(reqUrl)) {
+                throw new Error(`You can't access ${reqUrl} route`);
+            }
             if (routes[reqUrl].methods.indexOf(method) === -1) {
-                throw new Error(`You can't access /api/${name} route with ${method}'s method`);
+                throw new Error(`You can't access ${reqUrl} route with ${method}'s method`);
             }
             //
-            let url = await urlCheck(param, method, query, body);
-            if (url.error instanceof Error) throw new Error(url.error);
-            param = url.param;
-
-            let result, request, sql, total;
-            if (method === 'PUT') {
-                let params = param.operations.map(function (row, i) {
-                    row.table = param.table
-                    return row;
-                });
-                //
-                request = {method, body, query, sql: []};
-                result = await Promise.all(Promise.map(params, function (par) {
-                    sql = qbuilder(par);
-                    request.sql.push(sql.raw)
-                    return compile(sql.raw);
-                }))
-            } else if (method === 'GET') {
-                let sums;
-                let {columns, joins} = await getUpJoin(name, param.alias);
-                Object.assign(param, {columns, joins});
-                //
-                sums = qbuilder({
-                    type: param.type,
-                    table: param.table,
-                    alias: param.alias,
-                    columns: [
-                        {type: 'COUNT', expression: '*', as: 'counts'}
-                    ],
-                    joins: param.joins,
-                    where: param.where
-                });
-                sql = qbuilder(param);
-                request = {method, body, query, sql: sql.raw};
-                sql.raw = param.sort ? sql.raw.replace('limit', param.sort + ' limit') : sql.raw;
-                result = await compile(sql.raw);
-                total = await compile(sums.raw);
-            } else {
-                sql = qbuilder(param);
-                request = {method, body, query, sql: sql.raw};
-                result = await compile(sql.raw);
-            }
-            //
-            if (result instanceof Error) throw result;
-            else {
-                let bodySend = {status, message, request, data: result};
-                if (total) bodySend.total = total[0].counts;
-                res.send(bodySend);
-            }
+            req.queryObj = await setQuery({table: name}, method, query, body);
+            if (req.queryObj instanceof Error) throw req.queryObj;
+            return next();
         } catch (e) {
-            if (e.message.indexOf('Unexpected token') === 0) {
-                let s = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
-                next(new Error(s));
-            } else next(e);
+            return next(e);
         }
     };
     _temp.database = Glob.config.mysql.database;
@@ -265,7 +230,7 @@ module.exports = function ({Glob, locals, compile}) {
         //
         await Promise.map(Glob.tables, async function (name, i) {
             let rawFields = await compile(`DESCRIBE ${name}`);
-            let {columns, upRelation} = await getUpJoin(name, 'o');
+            let {columns, parents} = await getParentRelations(name, 'o');
             let self = {};
             rawFields.forEach(function (el) {
                 self[el.Field] = {
@@ -276,7 +241,7 @@ module.exports = function ({Glob, locals, compile}) {
                     //default: el.Default
                 }
             });
-            upRelation.forEach(function (relate) {
+            parents.forEach(function (relate) {
                 let table = Glob.tables[lowerCaseTables.indexOf(relate.table_ref)];
                 let prefix = relate.column.substr(0, relate.column.length - relate.column_ref.length - 1);
                 self[relate.column].table_ref = table || '?';
@@ -298,9 +263,79 @@ module.exports = function ({Glob, locals, compile}) {
         //}
         res.send({status, message, data: tables})
     });
-    route.put('/:name', middleware);
-    route.post('/:name', middleware);
-    route.delete('/:name', middleware);
-    route.get('/:name', middleware);
+    route.put('/:name', authorizing, async function (req, res, next) {
+        let {status, message} = httpCode.OK;
+        let {method, query, body, queryObj} = req;
+        let request = {method, body, query, sql: []};
+
+        try {
+            let data = await Promise.all(Promise.map(queryObj.operations, function (obj) {
+                let sql = qbuilder(obj).raw;
+                request.sql.push(sql);
+                return compile(sql);
+            }));
+            res.send({status, message, request, data});
+        } catch (e) {
+            if (e.message.indexOf('Unexpected token') === 0) {
+                let error = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
+                next(new Error(error));
+            } else next(e);
+        }
+    });
+    route.post('/:name', authorizing, async function (req, res, next) {
+        let {status, message} = httpCode.OK;
+        let {method, query, body, queryObj} = req;
+        let mainQuery = qbuilder(queryObj).raw;
+        let request = {method, body, query, sql: mainQuery};
+
+        try {
+            let data = await compile(mainQuery);
+            res.send({status, message, request, data});
+        } catch (e) {
+            if (e.message.indexOf('Unexpected token') === 0) {
+                let error = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
+                next(new Error(error));
+            } else next(e);
+        }
+    });
+    route.delete('/:name', authorizing, async function (req, res, next) {
+        let {status, message} = httpCode.OK;
+        let {method, query, body, queryObj} = req;
+        let mainQuery = qbuilder(queryObj).raw;
+        let request = {method, body, query, sql: mainQuery};
+
+        try {
+            let data = await compile(mainQuery);
+            res.send({status, message, request, data});
+        } catch (e) {
+            if (e.message.indexOf('Unexpected token') === 0) {
+                let error = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
+                next(new Error(error));
+            } else next(e);
+        }
+    });
+    route.get('/:name', authorizing, async function (req, res, next) {
+        let {status, message} = httpCode.OK;
+        let {method, query, body, queryObj} = req;
+        let columns = [{type: 'COUNT', expression: '*', as: 'xy'}];
+        let counter = Object.assign({}, queryObj, {columns});
+        let mainQuery = qbuilder(queryObj).raw;
+        let totalQuery = qbuilder(counter).raw;
+        let request = {method, body, query, sql: mainQuery};
+
+        //todo: delete next line!
+        request.original = qbuilder(queryObj).original;
+
+        try {
+            let total = await compile(totalQuery);
+            let data = await compile(mainQuery);
+            res.send({status, message, request, total: total[0].xy, data});
+        } catch (e) {
+            if (e.message.indexOf('Unexpected token') === 0) {
+                let error = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
+                next(new Error(error));
+            } else next(e);
+        }
+    });
     return route;
 };
