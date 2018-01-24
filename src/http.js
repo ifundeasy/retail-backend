@@ -169,6 +169,7 @@ const http = async function (pool, compile) {
         res.send({status, message, data: {user, actor, modules, routes}})
     });
     app.use('/api', Authorization, require(`${src}/http.api`)({Glob, locals, compile}));
+    app.use('/soap', Authorization, require(`${src}/http.soap`)({Glob, locals, compile}));
     /** **************************************************************************
      ** error handling : http request
      ** **************************************************************************/
