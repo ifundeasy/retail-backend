@@ -213,6 +213,7 @@ const http = async function (pool, compile) {
 module.exports = async function () {
     let pool = await mysql.createPool(config.mysql);
     let compile = async function (query, data) {
+        query = query.replace(/\n/g, '').replace(/\t/g, ' ').replace(/\s\s+/g, ' ').trim();
         try {
             let conn = await pool.getConnection();
             if (conn instanceof Error) throw new Error(conn);
