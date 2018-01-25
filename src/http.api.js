@@ -93,7 +93,7 @@ const getParentRelations = async function (name, alias) {
     return {columns, joins, parents}
 };
 const setQuery = async function (object, method, query = {}, body = {}) {
-    let filter, error = [], {table} = object,
+    let filter, sorter, error = [], {table} = object,
         columns = await describeColumns(object.table);
 
     if (['POST', 'PUT'].indexOf(method) > -1 && !Object.keys(body).length) {
@@ -103,6 +103,21 @@ const setQuery = async function (object, method, query = {}, body = {}) {
         filter = jsonParse(query.filter);
         if (!filter) error.push(filter.message);
         if (!Object.keys(filter).length) error.push('query string for filter value');
+    }
+    if (query.hasOwnProperty('sort') && method === 'GET') {
+        sorter = jsonParse(query.sort);
+        if (!sorter) error.push(sorter.message);
+        if (sorter.length) {
+            object.order = {};
+            sorter.forEach(function (sort = {}, i) {
+                let {property, direction} = sort;
+                if (property && direction) {
+                    object.order[property] = direction.toLowerCase();
+                } else {
+                    error.push(`query string for sort value at index-${i} require "property" and "direction" key`);
+                }
+            });
+        }
     }
     if (error.length) return new Error(`Invalid ${error.join(',')}`);
     //
@@ -170,18 +185,6 @@ const setQuery = async function (object, method, query = {}, body = {}) {
         object.where = filter;
         object.offset = parseInt(query.offset) || 0;
         object.limit = parseInt(query.limit) || 100;
-        try {
-            let sorter = JSON.parse(query.sort);
-            if (sorter.length) {
-                object.order = {};
-                sorter.forEach(function (sort) {
-                    let {property, direction} = sort;
-                    object.order[property] = direction.toLowerCase();
-                });
-            }
-        } catch (e) {
-            //
-        }
         parents = await getParentRelations(table, object.alias);
         object.columns = parents.columns;
         object.joins = parents.joins;
