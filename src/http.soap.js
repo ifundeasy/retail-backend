@@ -74,7 +74,7 @@ module.exports = function ({Glob, locals, compile}) {
         try {
             let adtQuery = qbuilder(getAdtQuery({table: 'WTF'}, query)).raw;
             let productQuery = `
-                SELECT 
+                SELECT
                     z.id, z.name,
                     r3.id productCode_id,
                     r3.code productCode_code,
@@ -82,15 +82,18 @@ module.exports = function ({Glob, locals, compile}) {
                     r4.id productPrice_id, r4.price productPrice_price,
                     r4.type_id, r4.type_name,
                     r4.unit_id, r4.unit_name, r4.unit_shortname,
-                    z.status_id, r6.name status_name,
+                    r5.productPriceDisc_name, r5.productPriceDisc_value, r5.productPriceDisc_desc,
+                    r6.productPriceTax_name, r6.productPriceTax_value, r6.productPriceTax_desc,
+                        r7.productTag_name,
+                    z.status_id, r8.name status_name,
                     z.notes,
                     z.product_id, r1.name product_name
                 FROM product z
                 LEFT JOIN product r1 ON r1.id = z.product_id AND r1.op_id = 1
                 LEFT JOIN brand r2 ON r2.id = z.brand_id AND r2.op_id = 1
                 LEFT JOIN (
-                    SELECT * 
-                    FROM (SELECT * FROM productCode WHERE op_id = 1 ORDER BY id DESC) a 
+                    SELECT *
+                    FROM (SELECT * FROM productCode WHERE op_id = 1 ORDER BY id DESC) a
                     GROUP BY product_id
                 ) r3 ON r3.product_id = z.id
                 LEFT JOIN (
@@ -100,13 +103,63 @@ module.exports = function ({Glob, locals, compile}) {
                     JOIN \`unit\` ON \`unit\`.id = b.unit_id AND \`unit\`.op_id = 1
                     GROUP BY product_id, b.type_id
                 ) r4 ON r4.product_id = z.id
-                LEFT JOIN \`status\` r6 ON r6.id = z.status_id AND r6.op_id = 1
+                LEFT JOIN (
+                    SELECT
+                        c.product_id, c.productPrice_id,
+                        GROUP_CONCAT(c.discount_name SEPARATOR ', ') productPriceDisc_name,
+                        GROUP_CONCAT(c.discount_value SEPARATOR ', ') productPriceDisc_value,
+                        GROUP_CONCAT(c.discount_desc SEPARATOR ', ') productPriceDisc_desc
+                    FROM (
+                        SELECT
+                            d3.product_id, d1.productPrice_id, d1.discount_id,
+                            d2.name discount_name, IF (d2.isPercent = '1', CONCAT(d2.value, '%'), d2.value) discount_value,
+                            CONCAT(d2.name, ' (', IF (d2.isPercent = '1', CONCAT(d2.value, '%'), d2.value), ')') discount_desc
+                        FROM productPriceDisc d1
+                        LEFT JOIN discount d2 ON d2.id = d1.discount_id AND d2.op_id = 1
+                        LEFT JOIN productPrice d3 ON d3.id = d1.productPrice_id AND d3.op_id = 1
+                        WHERE d1.op_id = 1
+                    ) c
+                    GROUP BY c.productPrice_id
+                ) r5 ON r5.productPrice_id = r4.id
+                LEFT JOIN (
+                    SELECT
+                        d.product_id, d.productPrice_id,
+                        GROUP_CONCAT(d.tax_name SEPARATOR ', ') productPriceTax_name,
+                        GROUP_CONCAT(d.tax_value SEPARATOR ', ') productPriceTax_value,
+                        GROUP_CONCAT(d.tax_desc SEPARATOR ', ') productPriceTax_desc
+                    FROM (
+                        SELECT
+                            e3.product_id, e1.productPrice_id, e1.tax_id,
+                            e2.name tax_name, IF (e2.isPercent = '1', CONCAT(e2.value, '%'), e2.value) tax_value,
+                            CONCAT(e2.name, ' (', IF (e2.isPercent = '1', CONCAT(e2.value, '%'), e2.value), ')') tax_desc
+                        FROM productPriceTax e1
+                        LEFT JOIN tax e2 ON e2.id = e1.tax_id AND e2.op_id = 1
+                        LEFT JOIN productPrice e3 ON e3.id = e1.productPrice_id AND e3.op_id = 1
+                        WHERE e1.op_id = 1
+                    ) d
+                    GROUP BY d.productPrice_id
+                ) r6 ON r6.productPrice_id = r4.id
+                LEFT JOIN (
+                    SELECT e.product_id, GROUP_CONCAT(e.name SEPARATOR ', ') productTag_name
+                    FROM (
+                        SELECT c1.tag_id tag_id1, c2.tag_id tag_id2, c1.product_id, c2.name, c1.op_id FROM productTag c1
+                        LEFT JOIN tag c2 ON c2.id = c1.tag_id AND c2.op_id = 1
+                        UNION
+                        SELECT c2.tag_id tag_id1, c3.tag_id tag_id2, c1.product_id, c3.name, c1.op_id FROM productTag c1
+                        LEFT JOIN tag c2 ON c2.id = c1.tag_id AND c2.op_id = 1
+                        LEFT JOIN tag c3 ON c3.id = c2.tag_id AND c3.op_id = 1
+                        ORDER BY tag_id2, tag_id1
+                    ) e
+                    WHERE op_id = 1
+                    GROUP BY product_id
+                ) r7 ON r7.product_id = z.id
+                LEFT JOIN \`status\` r8 ON r8.id = z.status_id AND r8.op_id = 1
                 WHERE (z.op_id = 1)
             `;
             let tags = [], discounts = [], taxes = [], pricesIds = [], productIds = [];
             let total, products = await compile(`
                 SELECT * FROM (${productQuery}) product
-                ${adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '')}
+                ${adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : ''}
             `);
             if (products.length) {
                 productIds = products.map(function (product) {
