@@ -23,7 +23,7 @@ exports.up = function (queryInterface, sequelize) {
         },
         brand_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: true,
+            allowNull: false,
             reff: {
                 model: 'brand',
                 key: 'id'
