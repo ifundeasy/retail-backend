@@ -146,12 +146,11 @@
         "seq": 12,
         "table_scopes": [
             "product",
-            "productCode",
-            "productDiscount",
-            "productMedia",
-            "productPrice",
             "productTag",
-            "productTax"
+            "productCode",
+            "productPrice",
+            "productPriceDisc",
+            "productPriceTax"
         ]
     },
     {
