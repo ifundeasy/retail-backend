@@ -161,6 +161,7 @@ module.exports = function ({Glob, locals, compile}) {
                 SELECT * FROM (${productQuery}) product
                 ${adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : ''}
             `);
+
             if (products.length) {
                 productIds = products.map(function (product) {
                     let priceId = product.productPrice_id;
@@ -237,7 +238,13 @@ module.exports = function ({Glob, locals, compile}) {
                     })
                 }
             }
-            total = await compile(`SELECT COUNT(*) xy FROM (${productQuery}) product`);
+            total = await compile(`
+                SELECT COUNT(*) xy FROM (${productQuery}) product
+                ${
+                    (adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : '')
+                    .replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')
+                }
+            `);
             res.send({status, message, total: total[0].xy, data: products});
         } catch (e) {
             if (e.message.indexOf('Unexpected token') === 0) {
