@@ -322,6 +322,9 @@ module.exports = function ({Glob, locals, compile}) {
         let {method, query, body, queryObj} = req;
         let columns = [{type: 'COUNT', expression: '*', as: 'xy'}];
         let counter = Object.assign({}, queryObj, {columns});
+
+        delete counter.offset;
+        delete counter.limit;
         let mainQuery = qbuilder(queryObj).raw;
         let totalQuery = qbuilder(counter).raw;
         let request = {method, body, query, sql: mainQuery};
