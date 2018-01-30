@@ -92,6 +92,26 @@ const getParentRelations = async function (name, alias) {
 
     return {columns, joins, parents}
 };
+const setCondition = function (object, columns) {
+    let fn = function (object, columns) {
+        if (object instanceof Object || object instanceof Array) {
+            for (let key in object) {
+                let child = object[key];
+                let found = columns.filter(function (obj) {
+                    if (obj.as === key) return 1
+                    return 0
+                });
+                if (found.length) {
+                    object[found[0].name] = object[key];
+                    delete object[key];
+                }
+                fn(child, columns);
+            }
+        }
+    }
+    fn(object, columns);
+    return object;
+};
 const setQuery = async function (object, method, query = {}, body = {}) {
     let filter, sorter, error = [], {table} = object,
         columns = await describeColumns(object.table);
@@ -182,12 +202,22 @@ const setQuery = async function (object, method, query = {}, body = {}) {
         filter.op_id = 1;
         object.alias = 'z';
         object.type = 'select';
-        object.where = filter;
         object.offset = parseInt(query.offset) || 0;
         object.limit = parseInt(query.limit) || 100;
         parents = await getParentRelations(table, object.alias);
         object.columns = parents.columns;
         object.joins = parents.joins;
+        object.where = setCondition(filter, parents.columns);
+        for (let o in object.order) {
+            for (let col in parents.columns) {
+                let column = parents.columns[col]
+                if (column.as === o) {
+                    object.order[column.name] = object.order[o]
+                    delete object.order[o];
+                    break;
+                }
+            }
+        }
     }
     return object
 };
@@ -320,13 +350,18 @@ module.exports = function ({Glob, locals, compile}) {
     route.get('/:name', authorizing, async function (req, res, next) {
         let {status, message} = httpCode.OK;
         let {method, query, body, queryObj} = req;
-        let columns = [{type: 'COUNT', expression: '*', as: 'xy'}];
-        let counter = Object.assign({}, queryObj, {columns});
+        let counter = Object.assign({}, queryObj);
 
         delete counter.offset;
         delete counter.limit;
+
         let mainQuery = qbuilder(queryObj).raw;
-        let totalQuery = qbuilder(counter).raw;
+        let totalQuery = qbuilder({
+            type: 'select',
+            table: counter,
+            alias: 'counter',
+            columns: [{type: 'COUNT', expression: '*', as: 'xy'}]
+        }).raw;
         let request = {method, body, query, sql: mainQuery};
 
         //todo: delete next line!
