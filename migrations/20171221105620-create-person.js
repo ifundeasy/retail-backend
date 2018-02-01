@@ -29,14 +29,6 @@ exports.up = function (queryInterface, sequelize) {
             allowNull: false,
             defaultValue: ''
         },
-        media_id: {
-            type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: true,
-            reff: {
-                model: 'media',
-                key: 'id'
-            }
-        },
         gender: {
             type: sequelize.ENUM('0', '1'),
             allowNull: false,
