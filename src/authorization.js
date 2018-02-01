@@ -17,13 +17,11 @@ module.exports = function (compile) {
             LEFT JOIN module c ON c.id = b.module_id AND c.op_id = 1
             LEFT JOIN moduleRoute d ON d.module_id = c.id AND d.op_id = 1
             LEFT JOIN httpmethod e ON e.id = d.httpmethod_id AND e.op_id = 1
-            WHERE z.id = ? AND z.op_id = 1
+            WHERE z.person_id = ? AND z.op_id = 1
         `, user.id);
         if (roleData instanceof Error) throw roleData;
 
-        let actor = { id: roleData[0].actor_id, name: roleData[0].actor_name };
-        let routes = {};
-        let modules = {};
+        let routes = {}, modules = {}, actors = {};
         for (let a in roleData) {
             let role = roleData[a];
             let {
@@ -32,24 +30,28 @@ module.exports = function (compile) {
                 module_notes
             } = role;
 
+            actors[role.actor_id] = { id: role.actor_id, name: role.actor_name };
+
             if (role.route) {
                 routes[role.route] = routes[role.route] || {value: role.route, table: role.TABLENAME};
                 routes[role.route].methods = routes[role.route].methods || [];
                 routes[role.route].methods.push(role.httpmethod_code)
             }
-            
-            modules[module_id] = modules[module_id] || {
-                id: module_id,
-                parent: module_parent,
-                name: module_name,
-                class: module_class,
-                seq: module_seq,
-                collapsed: module_collapsed,
-                notes: module_notes,
-                tables: []
-            };
+
+            if (module_id) {
+                modules[module_id] = modules[module_id] || {
+                    id: module_id,
+                    parent: module_parent,
+                    name: module_name,
+                    class: module_class,
+                    seq: module_seq,
+                    collapsed: module_collapsed,
+                    notes: module_notes,
+                    tables: []
+                };
+            }
             if (role.TABLENAME && modules[module_id].tables.indexOf(role.TABLENAME) < 0) {
-            	modules[module_id].tables.push(role.TABLENAME);            
+                modules[module_id].tables.push(role.TABLENAME);
             }
         }
         /** For nested data modules **/
@@ -67,7 +69,9 @@ module.exports = function (compile) {
         //modules = Object.keys(modules).map(function (k) {
         //    return modules[k]
         //});
-        req.logged.actor = actor;
+        req.logged.actor = Object.keys(actors).map(function (id) {
+            return actors[id]
+        });
         req.logged.routes = routes;
         req.logged.modules = modules;
         next();
