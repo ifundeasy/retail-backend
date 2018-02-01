@@ -8,7 +8,7 @@ exports.up = function (queryInterface, sequelize) {
             primaryKey: true,
             autoIncrement: true
         },
-        value: {
+        name: {
             type: sequelize.STRING(30),
             allowNull: false,
             defaultValue: ''
