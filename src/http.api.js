@@ -2,8 +2,14 @@ const _temp = {};
 const fs = require('fs');
 const Promise = require('bluebird');
 const {Router} = require('express');
+const crypto = require('crypto');
 const route = Router();
 const avoidFields = ['salt', 'password'];
+const sha512 = function (string, salt) {
+    let hash = crypto.createHmac('sha512', salt);
+    hash.update(string);
+    return hash.digest('hex');
+};
 const jsonParse = function (string) {
     try {
         throw JSON.parse(string);
@@ -139,6 +145,15 @@ const setQuery = async function (object, method, query = {}, body = {}) {
             });
         }
     }
+    if (table === 'person' && (method === 'POST' || method === 'PUT')) {
+        let isObject = body.constructor === Object;
+        let payloads = isObject ? [body] : body;
+        payloads.forEach(function (data, i) {
+            if (!data.username) {
+                error.push('username in body payload values' + (isObject ? '' : ' at index' + i))
+            }
+        })
+    }
     if (error.length) return new Error(`Invalid ${error.join(',')}`);
     //
     if (method === 'POST') {
@@ -154,6 +169,14 @@ const setQuery = async function (object, method, query = {}, body = {}) {
 
             return data
         });
+        if (table === 'person') {
+            object.values.forEach(function (data){
+                let salt = _temp.randomString(16);
+                Object.assign(data, {
+                    salt, password: sha512(data.username, salt)
+                });
+            });
+        }
     } else if (method === 'PUT') {
         object.operations = [];
         body = body.constructor === Object ? [body] : body;
@@ -161,10 +184,13 @@ const setQuery = async function (object, method, query = {}, body = {}) {
             let data = {};
             let condition = row._;
             let {id} = condition;
+
             columns.forEach(function (field) {
-                if (row.hasOwnProperty(field)) {
-                    if (((field.slice(-3) === '_id') && !row[field]) || !row[field]) data[field] = null;
-                    else data[field] = row[field]
+                if (avoidFields.indexOf(field) < 0) {
+                    if (row.hasOwnProperty(field)) {
+                        if (((field.slice(-3) === '_id') && !row[field]) || !row[field]) data[field] = null;
+                        else data[field] = row[field]
+                    }
                 }
             });
             data.op_id = 1;
@@ -177,6 +203,12 @@ const setQuery = async function (object, method, query = {}, body = {}) {
                     where: {id}
                 })
             } else {
+                if (table === 'person') {
+                    let salt = _temp.randomString(16);
+                    Object.assign(data, {
+                        salt, password: sha512(data.username, salt)
+                    });
+                }
                 object.operations.push({
                     table: table,
                     type: 'insert',
@@ -225,6 +257,7 @@ const setQuery = async function (object, method, query = {}, body = {}) {
 module.exports = function ({Glob, locals, compile}) {
     const httpCode = require(`${Glob.home}/utils/http.code`);
     const qbuilder = require(`${Glob.home}/utils/query.builder`);
+    const randomString = require(`${Glob.home}/utils/random.string`);
     const {name} = locals;
     const authorizing = async function (req, res, next) {
         let {method, query, body} = req,
@@ -253,6 +286,7 @@ module.exports = function ({Glob, locals, compile}) {
     };
     _temp.database = Glob.config.mysql.database;
     _temp.compileFn = compile;
+    _temp.randomString = randomString;
     //
     route.get('/_models', async function (req, res, next) {
         let tables = {};
