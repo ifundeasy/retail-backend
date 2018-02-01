@@ -41,109 +41,119 @@
     {
         "id": 6,
         "parent_id": 1,
-        "name": "Media",
-        "class": "master.media",
+        "name": "Contact Type",
+        "class": "master.contact",
         "seq": 2,
         "table_scopes": [
-            "media"
+            "contact"
         ]
     },
     {
         "id": 7,
         "parent_id": 1,
-        "name": "Payment Method",
-        "class": "master.paymethod",
+        "name": "Media",
+        "class": "master.media",
         "seq": 3,
         "table_scopes": [
-            "paymethod"
+            "media"
         ]
     },
     {
         "id": 8,
         "parent_id": 1,
-        "name": "Tag & Category",
-        "class": "master.tag",
+        "name": "Payment Method",
+        "class": "master.paymethod",
         "seq": 4,
         "table_scopes": [
-            "tag"
+            "paymethod"
         ]
     },
     {
         "id": 9,
         "parent_id": 1,
-        "name": "Transaction Type",
-        "class": "master.type",
+        "name": "Tag & Category",
+        "class": "master.tag",
         "seq": 5,
         "table_scopes": [
-            "type"
+            "tag"
         ]
     },
     {
         "id": 10,
         "parent_id": 1,
-        "name": "Unit",
-        "class": "master.unit",
+        "name": "Transaction Type",
+        "class": "master.type",
         "seq": 6,
         "table_scopes": [
-            "unit"
+            "type"
         ]
     },
     {
         "id": 11,
         "parent_id": 1,
-        "name": "Convertion",
-        "class": "master.unitConv",
+        "name": "Unit",
+        "class": "master.unit",
         "seq": 7,
         "table_scopes": [
-            "unitConvertion"
+            "unit"
         ]
     },
     {
         "id": 12,
         "parent_id": 1,
-        "name": "Brand",
-        "class": "master.brand",
+        "name": "Convertion",
+        "class": "master.unitConv",
         "seq": 8,
         "table_scopes": [
-            "brand"
+            "unitConvertion"
         ]
     },
     {
         "id": 13,
         "parent_id": 1,
-        "name": "Code",
-        "class": "master.code",
+        "name": "Brand",
+        "class": "master.brand",
         "seq": 9,
         "table_scopes": [
-            "code"
+            "brand"
         ]
     },
     {
         "id": 14,
         "parent_id": 1,
-        "name": "Taxes",
-        "class": "master.taxes",
+        "name": "Code",
+        "class": "master.code",
         "seq": 10,
         "table_scopes": [
-            "tax"
+            "code"
         ]
     },
     {
         "id": 15,
         "parent_id": 1,
-        "name": "Discount",
-        "class": "master.discount",
+        "name": "Taxes",
+        "class": "master.taxes",
         "seq": 11,
         "table_scopes": [
-            "discount"
+            "tax"
         ]
     },
     {
         "id": 16,
         "parent_id": 1,
+        "name": "Discount",
+        "class": "master.discount",
+        "seq": 12,
+        "table_scopes": [
+            "discount"
+        ]
+    },
+    {
+        "id": 17,
+        "parent_id": 1,
         "name": "Goods & Services",
         "class": "master.product",
-        "seq": 12,
+        "seq": 13,
         "table_scopes": [
             "product",
             "productTag",
@@ -154,15 +164,15 @@
         ]
     },
     {
-        "id": 17,
+        "id": 18,
         "parent_id": 1,
         "name": "Location",
         "class": null,
-        "seq": 13,
+        "seq": 14,
         "collapsed": "1"
     },
     {
-        "id": 18,
+        "id": 19,
         "parent_id": 2,
         "name": "Request Method",
         "class": "role.reqmethod",
@@ -172,44 +182,43 @@
         ]
     },
     {
-        "id": 19,
+        "id": 20,
         "parent_id": 2,
         "name": "Module",
         "class": "role.module",
-        "seq": 3,
+        "seq": 2,
         "table_scopes": [
             "module",
             "moduleRoute"
         ]
     },
     {
-        "id": 20,
+        "id": 21,
         "parent_id": 2,
         "name": "Actor",
         "class": "role.actor",
-        "seq": 4,
+        "seq": 3,
         "table_scopes": [
             "actor"
         ]
     },
     {
-        "id": 21,
+        "id": 22,
         "parent_id": 2,
         "name": "Privileges",
         "class": "role.privilege",
-        "seq": 5,
+        "seq": 4,
         "table_scopes": [
             "actorModule"
         ]
     },
     {
-        "id": 22,
+        "id": 23,
         "parent_id": 2,
         "name": "Account",
         "class": "role.account",
-        "seq": 6,
+        "seq": 5,
         "table_scopes": [
-            "contact",
             "person",
             "personActor",
             "personAddress",
@@ -218,7 +227,7 @@
         ]
     },
     {
-        "id": 23,
+        "id": 24,
         "parent_id": 3,
         "name": "Operational",
         "class": "transc.operation",
@@ -232,7 +241,7 @@
         ]
     },
     {
-        "id": 24,
+        "id": 25,
         "parent_id": 3,
         "name": "Purchase",
         "class": "transc.purchase",
@@ -246,7 +255,7 @@
         ]
     },
     {
-        "id": 25,
+        "id": 26,
         "parent_id": 3,
         "name": "Sales",
         "class": "transc.sales",
@@ -260,7 +269,7 @@
         ]
     },
     {
-        "id": 26,
+        "id": 27,
         "parent_id": 4,
         "name": "Operational",
         "class": "report.operation",
@@ -268,7 +277,7 @@
         "table_scopes": []
     },
     {
-        "id": 27,
+        "id": 28,
         "parent_id": 4,
         "name": "Purchase",
         "class": "report.purchase",
@@ -276,7 +285,7 @@
         "table_scopes": []
     },
     {
-        "id": 28,
+        "id": 29,
         "parent_id": 4,
         "name": "Sales",
         "class": "report.sales",
@@ -284,7 +293,7 @@
         "table_scopes": []
     },
     {
-        "id": 29,
+        "id": 30,
         "parent_id": 4,
         "name": "Profit",
         "class": "report.profit",
@@ -292,8 +301,8 @@
         "table_scopes": []
     },
     {
-        "id": 30,
-        "parent_id": 17,
+        "id": 31,
+        "parent_id": 18,
         "name": "National",
         "class": "location.national",
         "seq": 1,
@@ -302,8 +311,8 @@
         ]
     },
     {
-        "id": 31,
-        "parent_id": 17,
+        "id": 32,
+        "parent_id": 18,
         "name": "State",
         "class": "location.state",
         "seq": 2,
@@ -312,8 +321,8 @@
         ]
     },
     {
-        "id": 32,
-        "parent_id": 17,
+        "id": 33,
+        "parent_id": 18,
         "name": "Regency",
         "class": "location.regency",
         "seq": 3,
@@ -322,8 +331,8 @@
         ]
     },
     {
-        "id": 33,
-        "parent_id": 17,
+        "id": 34,
+        "parent_id": 18,
         "name": "District",
         "class": "location.district",
         "seq": 4,
@@ -332,8 +341,8 @@
         ]
     },
     {
-        "id": 34,
-        "parent_id": 17,
+        "id": 35,
+        "parent_id": 18,
         "name": "Village",
         "class": "location.village",
         "seq": 5,
