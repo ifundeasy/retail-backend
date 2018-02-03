@@ -168,6 +168,54 @@ const http = async function (pool, compile) {
         delete user.salt;
         res.send({status, message, data: {user, actor, modules, routes}})
     });
+    app.post('/changePassword', async function (req, res, next) {
+        let {currentPassword, newPassword1, newPassword2} = req.body;
+        let {status, message} = httpCode.OK;
+        if (req.logged) {
+            let {user} = req.logged;
+            let {username, salt} = user;
+            let is = false, error = '';
+
+            if (!currentPassword || !newPassword1 || !newPassword2) {
+                message = 'Please completing the form..';
+            } else {
+                let hashed = sha512(currentPassword || '', salt);
+                let avoids = ['password', '1234', '123456', '098765'];
+
+                if (user.password !== hashed) {
+                    error = 'Old password is wrong!'
+                } else if (newPassword1 !== newPassword2) {
+                    error = 'New password doesn\'t match!'
+                } else if (avoids.indexOf(newPassword1) > -1) {
+                    error = 'New password doesn\'t allowed!';
+                } else if (newPassword1.length < 6) {
+                    error = 'New password too short!';
+                } else if (newPassword1 === username) {
+                    error = 'New password must different with username!';
+                } else if (newPassword1 === currentPassword) {
+                    error = 'New password must different with old password!';
+                } else {
+                    is = true;
+                }
+            }
+
+            if (!is) return next(new Error(error));
+            else {
+                let newPassword = sha512(newPassword1, salt);
+                try {
+                    let query = compile(
+                        'UPDATE person SET password = ? WHERE id = ? AND op_id = 1',
+                        [newPassword, user.id]
+                    );
+                    return res.send({status, message, data: query})
+                } catch (e) {
+                    next(e);
+                }
+            }
+        } else {
+            next(new Error('Wrong token or expired, login required!'));
+        }
+    });
     app.use('/api', Authorization, require(`${src}/http.api`)({Glob, locals, compile}));
     app.use('/soap', Authorization, require(`${src}/http.soap`)({Glob, locals, compile}));
     /** **************************************************************************
