@@ -4,8 +4,9 @@ const Promise = require('bluebird');
 const csv = require('fast-csv');
 const Sequelize = require('Sequelize');
 const data = [
-    {id: 1, name: 'exist'},
-    {id: 2, name: 'deleted'}
+    {id: 1, name: 'permanent'},
+    {id: 2, name: 'exist'},
+    {id: 3, name: 'deleted'},
 ];
 exports.up = (queryInterface) => {
     return queryInterface.bulkInsert('op', data, {});
