@@ -12,12 +12,12 @@ module.exports = function (compile) {
                 d.TABLENAME, d.value route, d.httpmethod_id, 
                 e.name httpmethod_name, e.code httpmethod_code
             FROM personActor z
-            LEFT JOIN actor a ON z.actor_id = a.id AND z.op_id = 1
-            LEFT JOIN actorModule b ON a.id = b.actor_id AND b.op_id = 1
-            LEFT JOIN module c ON c.id = b.module_id AND c.op_id = 1
-            LEFT JOIN moduleRoute d ON d.module_id = c.id AND d.op_id = 1
-            LEFT JOIN httpmethod e ON e.id = d.httpmethod_id AND e.op_id = 1
-            WHERE z.person_id = ? AND z.op_id = 1
+            LEFT JOIN actor a ON z.actor_id = a.id AND z.op_id IN (1, 2)
+            LEFT JOIN actorModule b ON a.id = b.actor_id AND b.op_id IN (1, 2)
+            LEFT JOIN module c ON c.id = b.module_id AND c.op_id IN (1, 2)
+            LEFT JOIN moduleRoute d ON d.module_id = c.id AND d.op_id IN (1, 2)
+            LEFT JOIN httpmethod e ON e.id = d.httpmethod_id AND e.op_id IN (1, 2)
+            WHERE z.person_id = ? AND z.op_id IN (1, 2)
         `, user.id);
         if (roleData instanceof Error) throw roleData;
 

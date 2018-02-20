@@ -70,7 +70,7 @@ const getParentRelations = async function (name, alias) {
                 on: {[relate.column_ref]: `$z.${relate.column}$`}
             };
 
-            if (table_name !== 'op') join.on['op_id'] = 1;
+            if (table_name !== 'op') join.on['op_id'] = {$in: [1, 2]};
             if (table_name === name) join.type = 'left';
             joins.push(join);
         }
@@ -165,7 +165,7 @@ const setQuery = async function (object, method, query = {}, body = {}) {
             columns.forEach(function (field) {
                 if (row[field]) data[field] = row[field];
             });
-            data.op_id = 1;
+            data.op_id = 2;
 
             return data
         });
@@ -193,7 +193,7 @@ const setQuery = async function (object, method, query = {}, body = {}) {
                     }
                 }
             });
-            data.op_id = 1;
+            data.op_id = 2;
 
             if (condition.hasOwnProperty('id') && id) {
                 object.operations.push({
@@ -225,13 +225,13 @@ const setQuery = async function (object, method, query = {}, body = {}) {
         }).map(function (o) {
             return o.id
         });
-        object.updates = {op_id: 2};
-        object.where = {id: {$in}};
+        object.updates = {op_id: 3};
+        object.where = {id: {$in}, op_id: {$nin: [1, 3]}};
     } else if (method === 'GET') {
         let parents;
 
         filter = filter || {};
-        filter.op_id = 1;
+        filter.op_id = {$in: [1, 2]};
         object.alias = 'z';
         object.type = 'select';
         object.offset = parseInt(query.offset) || 0;
@@ -242,9 +242,9 @@ const setQuery = async function (object, method, query = {}, body = {}) {
         object.where = setCondition(filter, parents.columns);
         for (let o in object.order) {
             for (let col in parents.columns) {
-                let column = parents.columns[col]
+                let column = parents.columns[col];
                 if (column.as === o) {
-                    object.order[column.name] = object.order[o]
+                    object.order[column.name] = object.order[o];
                     delete object.order[o];
                     break;
                 }

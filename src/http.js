@@ -106,7 +106,7 @@ const http = async function (pool, compile) {
             let {username, password} = req.body;
             try {
                 //checking username
-                let data = await compile(`SELECT * FROM person WHERE username = ? AND op_id = 1`, username);
+                let data = await compile(`SELECT * FROM person WHERE username = ? AND op_id IN (1, 2)`, username);
                 if (data instanceof Error || data.length !== 1) throw (new Error('Invalid username'));
 
                 //checking password
@@ -126,7 +126,7 @@ const http = async function (pool, compile) {
 
                 //update login count
                 let updateUser = await compile(
-                    `UPDATE person SET loginCount = ? WHERE id = ? AND op_id = 1`,
+                    `UPDATE person SET loginCount = ? WHERE id = ? AND op_id IN (1, 2)`,
                     [user.loginCount + 1, user.id]
                 );
                 if (updateUser instanceof Error) throw (new Error('Failed set login counter'));
@@ -204,7 +204,7 @@ const http = async function (pool, compile) {
                 let newPassword = sha512(newPassword1, salt);
                 try {
                     let query = compile(
-                        'UPDATE person SET password = ? WHERE id = ? AND op_id = 1',
+                        'UPDATE person SET password = ? WHERE id = ? AND op_id IN (1, 2)',
                         [newPassword, user.id]
                     );
                     return res.send({status, message, data: query})
