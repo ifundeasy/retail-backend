@@ -31,6 +31,11 @@ exports.up = function (queryInterface, sequelize) {
                 key: 'id'
             }
         },
+        dc: {
+            type: sequelize.DATE,
+            allowNull: false,
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
+        },
         notes: {
             type: sequelize.STRING(50),
             allowNull: true

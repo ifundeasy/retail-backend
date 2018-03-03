@@ -10,6 +10,11 @@ exports.up = function (queryInterface, sequelize) {
             type: sequelize.STRING(20),
             allowNull: false,
             defaultValue: ''
+        },
+        dc: {
+            type: sequelize.DATE,
+            allowNull: false,
+            defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
         }
     });
 };

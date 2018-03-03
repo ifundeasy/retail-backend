@@ -16,7 +16,8 @@ const Indexes = [
     ['person', {name: 'idx_username', unique: true, fields: ['username']}],
     ['personContact', {name: 'idx_value', unique: true, fields: ['value']}],
     ['product', {name: 'idx_name', fields: ['name']}],
-    ['trans', {name: 'idx_code', unique: true, fields: ['code']}]
+    ['trans', {name: 'idx_code', unique: true, fields: ['code']}],
+    ['trans', {name: 'idx_dc', fields: ['dc']}],
 ];
 
 exports.up = async (queryInterface, Sequelize) => {
