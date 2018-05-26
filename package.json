@@ -7,7 +7,7 @@
     "url": "https://github.com/rappresent/retail-backend/issues"
   },
   "devDependencies": {
-    "nodemon": "^1.14.3",
+    "nodemon": "^1.17.4",
     "supertest": "^3.0.0"
   },
   "directories": {
