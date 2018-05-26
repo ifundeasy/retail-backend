@@ -24,6 +24,14 @@ exports.up = function (queryInterface, sequelize) {
                 key: 'id'
             }
         },
+        modifier_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: true,
+            reff: {
+                model: 'modifier',
+                key: 'id'
+            }
+        },
         qty: {
             type: sequelize.INTEGER(11),
             allowNull: false

@@ -10,6 +10,14 @@ exports.up = function (queryInterface, sequelize) {
         },
         TABLENAME: {
             type: sequelize.STRING(20),
+            allowNull: false
+        },
+        W_FIELD_NAME: {
+            type: sequelize.STRING(20),
+            allowNull: true
+        },
+        W_FIELD_VALUE: {
+            type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: true
         },
         value: {

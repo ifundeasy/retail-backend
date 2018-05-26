@@ -1,6 +1,6 @@
 const Promise = require('bluebird');
 exports.up = function (queryInterface, sequelize) {
-    let name = 'typePost';
+    let name = 'modifier';
     let model = {
         id: {
             type: sequelize.INTEGER(11).UNSIGNED,
@@ -61,5 +61,5 @@ exports.up = function (queryInterface, sequelize) {
 };
 
 exports.down = (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('typePost');
+    return queryInterface.dropTable('modifier');
 };

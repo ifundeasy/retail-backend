@@ -24,15 +24,15 @@ exports.up = function (queryInterface, sequelize) {
         },
         person_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: true,
+            allowNull: false,
             reff: {
                 model: 'person',
                 key: 'id'
             }
         },
-        customer_id: {
+        subject_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
-            allowNull: false,
+            allowNull: true,
             reff: {
                 model: 'person',
                 key: 'id'

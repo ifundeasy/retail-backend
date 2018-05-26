@@ -5,14 +5,14 @@ const Sequelize = require('Sequelize');
 const data = {
     type: [
         {id: 1, name: 'Purchasing'},
-        {id: 2, name: 'Sales'}
+        {id: 2, name: 'Sales'},
+        {id: 3, name: 'Operational'}
     ],
-    typePost: [
-        {id: 1, name: 'Void'},
-        {id: 2, name: 'Returns'},
-        {id: 3, name: 'Bonus'},
-        {id: 4, name: 'Complimentary'},
-        {id: 5, name: 'Sample'}
+    modifier: [
+        {id: 1, name: 'Void/Returns'},
+        {id: 2, name: 'Bonus'},
+        {id: 3, name: 'Complimentary'},
+        {id: 4, name: 'Sample'}
     ]
 };
 exports.up = (queryInterface) => {

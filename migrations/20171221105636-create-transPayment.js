@@ -28,6 +28,14 @@ exports.up = function (queryInterface, sequelize) {
             type: sequelize.STRING(20),
             allowNull: true
         },
+        person_id: {
+            type: sequelize.INTEGER(11).UNSIGNED,
+            allowNull: false,
+            reff: {
+                model: 'person',
+                key: 'id'
+            }
+        },
         total: {
             type: "DOUBLE",
             allowNull: false,
