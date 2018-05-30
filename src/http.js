@@ -86,7 +86,8 @@ const http = async function (pool, compile) {
             text: 'Welcome',
             name, description, version, author,
             ip, port, env, reqTimeOut, logged,
-            protocol, storageKey, clientVar
+            protocol, storageKey, clientVar,
+            time: new Date()
         });
     });
     app.post('/login', async function (req, res, next) {
