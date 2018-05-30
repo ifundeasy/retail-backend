@@ -20,7 +20,7 @@ const jsonParse = function (string) {
 const describeColumns = async function (name) {
     let columns = await _temp.compileFn(`DESCRIBE \`${name}\``);
     return columns.map(function (row) {
-        return row.Field;
+        return [row.Field, row.Null];
     });
 };
 const getRelation = async function (name, mode) {
@@ -53,6 +53,7 @@ const getRelation = async function (name, mode) {
     return !mode ? {up, down} : mode === 'up' ? up : down;
 };
 const getParentRelations = async function (name, alias) {
+    let self = await describeColumns(name);
     let parents = await getRelation(name, 'up');
     let mapper = [name].concat(parents);
     let columns = [], joins = [];
@@ -64,6 +65,10 @@ const getParentRelations = async function (name, alias) {
         let newAlias = relate.column ? relate.column.substr(0, relate.column.length - relate.column_ref.length - 1) : '';
 
         if (i) {
+            let allowNull = self.filter(function(elm){
+                return elm[0] === relate.column ? 1 : 0;
+            })[0][1];
+
             join = {
                 target: table_name,
                 alias: 'r' + i,
@@ -72,10 +77,13 @@ const getParentRelations = async function (name, alias) {
 
             if (table_name !== 'op') join.on['op_id'] = {$in: [1, 2]};
             if (table_name === name) join.type = 'left';
+            else if (allowNull === 'YES') join.type = 'left';
+
             joins.push(join);
         }
 
-        cols.forEach(function (col) {
+        cols.forEach(function (elm) {
+            let col = elm[0];
             let columnName = [join.alias || alias, col].join('.');
             let asColumn = i ? [newAlias, col].join('_') : join.alias ? columnName : col;
             let isExist = columns.filter(function (col) {
@@ -162,7 +170,8 @@ const setQuery = async function (object, method, query = {}, body = {}) {
         object.values = body.map(function (row) {
             let data = {};
 
-            columns.forEach(function (field) {
+            columns.forEach(function (elm) {
+                let field = elm[0];
                 if (row[field]) data[field] = row[field];
             });
             data.op_id = 2;
@@ -185,7 +194,8 @@ const setQuery = async function (object, method, query = {}, body = {}) {
             let condition = row._;
             let {id} = condition;
 
-            columns.forEach(function (field) {
+            columns.forEach(function (elm) {
+                let field = elm[0];
                 if (avoidFields.indexOf(field) < 0) {
                     if (row.hasOwnProperty(field)) {
                         if (((field.slice(-3) === '_id') && !row[field]) || !row[field]) data[field] = null;
