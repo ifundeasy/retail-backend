@@ -8,11 +8,11 @@ exports.up = function (queryInterface, sequelize) {
             primaryKey: true,
             autoIncrement: true
         },
-        product_id: {
+        productCode_id: {
             type: sequelize.INTEGER(11).UNSIGNED,
             allowNull: false,
             reff: {
-                model: 'product',
+                model: 'productCode',
                 key: 'id'
             }
         },
