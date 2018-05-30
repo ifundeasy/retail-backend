@@ -41,6 +41,15 @@ const getAdtQuery = function (object, query = {}) {
     object.limit = parseInt(query.limit) || 100;
     return object
 };
+const whereOrderLimit = function (sql) {
+    let w = sql.indexOf('where');
+    let o = sql.indexOf('order by');
+    let l = sql.indexOf('order by');
+    if (w > -1) return sql.substr(w).replace(/WTF\./g, '');
+    if (o > -1) return sql.substr(o).replace(/WTF\./g, '');
+    if (l > -1) return sql.substr(l).replace(/WTF\./g, '');
+    return ''
+};
 //
 module.exports = function ({Glob, locals, compile}) {
     const httpCode = require(`${Glob.home}/utils/http.code`);
@@ -74,176 +83,212 @@ module.exports = function ({Glob, locals, compile}) {
         try {
             let adtQuery = qbuilder(getAdtQuery({table: 'WTF'}, query)).raw;
             let productQuery = `
+                SELECT 
+                    z.id, z.name, z.product_id, z.dc, z.notes,
+                    r1.id brand_id, r1.name brand_name, r1.dc brand_dc, r1.notes brand_notes,
+                    r2.id productCode_id, r2.code productCode_code, r2.dc productCode_dc, r2.notes productCode_notes
+                FROM product z
+                LEFT JOIN brand r1 ON r1.id = z.brand_id AND r1.op_id IN (1, 2)
+                LEFT JOIN (SELECT * FROM productCode ORDER BY dc DESC) r2 ON r2.product_id = z.id AND r2.op_id IN (1, 2)
+                WHERE z.op_id IN (1, 2)
+            `;
+            let total, productIds = [],
+                products = await compile(`SELECT * FROM (${productQuery}) product ${whereOrderLimit(adtQuery)}`);
+
+            if (products.length) {
+                let tags = await compile(`
+                    SELECT
+                        z.id, z.product_id, z.dc, z.notes,
+                        r1.id tag_id, r1.name tag_name, r1.tag_id tag_tag_id, r1.dc tag_dc, r1.notes tag_notes
+                    FROM productTag z
+                    LEFT JOIN (SELECT * FROM tag ORDER BY dc DESC) r1 ON r1.id = z.tag_id AND r1.op_id IN (1, 2)
+                `);
+
+                products.forEach(function (product) {
+                    if (productIds.indexOf(product.id) < 0) productIds.push(product.id);
+                });
+
+                let priceIds = [], prices = await compile(`
+                    SELECT
+                        z.id, r3.product_id, z.price, z.dc, z.notes,
+                        r1.id type_id, r1.name type_name, r1.dc type_dc, r1.notes type_notes,
+                        r2.id unit_id, r2.short unit_short, r2.name unit_name, r2.dc unit_dc, r2.notes unit_notes
+                    FROM productPrice z
+                    JOIN \`type\` r1 ON r1.id = z.type_id AND r1.op_id IN (1, 2)
+                    JOIN \`unit\` r2 ON r2.id = z.unit_id AND r2.op_id IN (1, 2)
+                    JOIN productCode r3 ON r3.id = z.productCode_id AND r3.op_id IN (1, 2)
+                    WHERE r3.product_id IN (${productIds.join()}) AND z.op_id IN (1, 2) 
+                    ORDER BY z.dc DESC
+                `);
+
+                prices.forEach(function (price) {
+                    if (priceIds.indexOf(price.id) < 0) priceIds.push(price.id);
+
+                    products.forEach(function (product) {
+                        product.prices = product.prices || [];
+                        if (product.id === price.product_id) {
+                            product.prices.push(price)
+                        }
+                    })
+                });
+
+                tags.forEach(function (tag) {
+                    products.forEach(function (product) {
+                        product.tags = product.tags || [];
+                        if (product.id === tag.product_id) {
+                            product.tags.push(tag)
+                        }
+                    })
+                });
+
+                if (priceIds.length) {
+                    let discounts = await compile(`
+                        SELECT
+                            z.id, z.productPrice_id, z.dc, z.notes,
+                            r1.id discount_id, r1.name discount_name, r1.isPercent discount_isPercent, 
+                            r1.value discount_value, r1.dc discount_dc, r1.notes discount_notes
+                        FROM productPriceDisc z
+                        JOIN discount r1 ON r1.id = z.discount_id AND r1.op_id IN (1, 2)
+                        WHERE z.productPrice_id IN (${priceIds.join()}) AND z.op_id IN (1, 2)
+                        ORDER BY z.dc DESC
+                    `);
+                    let taxes = await compile(`
+                        SELECT
+                            z.id, z.productPrice_id, z.dc, z.notes,
+                            r1.id tax_id, r1.name tax_name, r1.isPercent tax_isPercent, 
+                            r1.value tax_value, r1.dc tax_dc, r1.notes tax_notes
+                        FROM productPriceTax z
+                        JOIN tax r1 ON r1.id = z.tax_id AND r1.op_id IN (1, 2)
+                        WHERE z.productPrice_id IN (${priceIds.join()}) AND z.op_id IN (1, 2)
+                        ORDER BY z.dc DESC
+                    `);
+                    discounts.forEach(function (discount) {
+                        prices.forEach(function (price) {
+                            price.discounts = price.discounts || [];
+                            if (price.id === discount.productPrice_id) {
+                                price.discounts.push(discount)
+                            }
+                        })
+                    });
+                    taxes.forEach(function (tax) {
+                        prices.forEach(function (price) {
+                            price.taxes = price.taxes || [];
+                            if (price.id === tax.productPrice_id) {
+                                price.taxes.push(tax)
+                            }
+                        })
+                    });
+                }
+            }
+
+            total = await compile(`
+                SELECT COUNT(*) xy FROM (${productQuery}) product
+                ${whereOrderLimit(adtQuery).replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')}
+            `);
+            res.send({status, message, total: total[0].xy, data: products});
+        } catch (e) {
+            if (e.message.indexOf('Unexpected token') === 0) {
+                let error = 'Invalid query string for filter value, it should be JSON format. ' + e.message;
+                next(new Error(error));
+            } else next(e);
+        }
+    });
+    route.get('/productSummary', authorizing, async function (req, res, next) {
+        let {query} = req;
+        let {status, message} = httpCode.OK;
+        try {
+            let adtQuery = qbuilder(getAdtQuery({table: 'WTF'}, query)).raw;
+            let productQuery = `
                 SELECT
                     z.id, z.name,
-                    r3.id productCode_id,
-                    r3.code productCode_code,
-                    z.brand_id, r2.name brand_name,
-                    r4.id productPrice_id, r4.price productPrice_price,
-                    r4.type_id, r4.type_name,
-                    r4.unit_id, r4.unit_name, r4.unit_shortname,
-                    r5.productPriceDisc_name, r5.productPriceDisc_value, r5.productPriceDisc_desc,
-                    r6.productPriceTax_name, r6.productPriceTax_value, r6.productPriceTax_desc,
-                        r7.productTag_name,
-                    z.status_id, r8.name status_name,
-                    z.notes,
-                    z.product_id, r1.name product_name
+                    r1.name product_name,
+                    r2.id brand_id, r2.name brand_name,
+                    r3.productPrice_price, r3.productCode_code, r3.type_name, r3.unit_name, r3.unit_shortname,
+                    r4.productPriceDisc_name, r4.productPriceDisc_value, r4.productPriceDisc_desc,
+                    r5.productPriceTax_name, r5.productPriceTax_value, r5.productPriceTax_desc,
+                    r6.productTag_name, r7.id status_id, r7.name status_name
                 FROM product z
                 LEFT JOIN product r1 ON r1.id = z.product_id AND r1.op_id IN (1, 2)
-                LEFT JOIN brand r2 ON r2.id = z.brand_id AND r2.op_id IN (1, 2)
+                JOIN brand r2 ON r2.id = z.brand_id AND r2.op_id IN (1, 2)
                 LEFT JOIN (
-                    SELECT *
-                    FROM (SELECT * FROM productCode WHERE op_id IN (1, 2) ORDER BY id DESC) a
+                    SELECT
+                        product_id,
+                        GROUP_CONCAT(DISTINCT price SEPARATOR ', ') productPrice_price,
+                        GROUP_CONCAT(DISTINCT productCode_code SEPARATOR ', ') productCode_code,
+                        GROUP_CONCAT(DISTINCT type_name SEPARATOR ', ') type_name,
+                        GROUP_CONCAT(DISTINCT unit_name SEPARATOR ', ') unit_name,
+                        GROUP_CONCAT(DISTINCT unit_shortname SEPARATOR ', ') unit_shortname
+                    FROM (
+                        SELECT 
+                            z.*, r1.product_id, r1.code productCode_code, r2.name type_name, r3.name unit_name, r3.short unit_shortname
+                        FROM (SELECT * FROM productPrice WHERE op_id IN (1, 2) ORDER BY id DESC) z
+                        JOIN productCode r1 ON r1.id = z.productCode_id AND r1.op_id IN (1, 2)
+                        JOIN \`type\` r2 ON r2.id = z.type_id AND r2.op_id IN (1, 2)
+                        JOIN unit r3 ON r3.id = z.unit_id AND r3.op_id IN (1, 2)
+                        GROUP BY z.productCode_id, z.type_id, z.unit_id
+                    ) z
                     GROUP BY product_id
                 ) r3 ON r3.product_id = z.id
                 LEFT JOIN (
-                    SELECT b.*, \`unit\`.name unit_name, \`unit\`.short unit_shortname, \`type\`.name type_name
-                    FROM (SELECT * FROM productPrice WHERE op_id IN (1, 2) ORDER BY id DESC) b
-                    JOIN \`type\` ON \`type\`.id = b.type_id AND \`type\`.op_id IN (1, 2)
-                    JOIN \`unit\` ON \`unit\`.id = b.unit_id AND \`unit\`.op_id IN (1, 2)
-                    GROUP BY product_id, b.type_id
+                    SELECT
+                        product_id,
+                        GROUP_CONCAT(DISTINCT discount_name SEPARATOR ', ') productPriceDisc_name,
+                        GROUP_CONCAT(DISTINCT discount_value SEPARATOR ', ') productPriceDisc_value,
+                        GROUP_CONCAT(DISTINCT discount_desc SEPARATOR ', ') productPriceDisc_desc
+                    FROM (
+                        SELECT
+                            r3.product_id,
+                            r1.name discount_name, IF (r1.isPercent = '1', CONCAT(r1.value, '%'), r1.value) discount_value,
+                            CONCAT(r1.name, ' (', IF (r1.isPercent = '1', CONCAT(r1.value, '%'), r1.value), ')') discount_desc
+                        FROM productPriceDisc z
+                        LEFT JOIN discount r1 ON r1.id = z.discount_id AND r1.op_id IN (1, 2)
+                        LEFT JOIN productPrice r2 ON r2.id = z.productPrice_id AND r2.op_id IN (1, 2)
+                        LEFT JOIN productCode r3 ON r3.id = r2.productCode_id AND r3.op_id IN (1, 2)
+                        WHERE z.op_id IN (1, 2)
+                    ) z
+                    GROUP BY product_id
                 ) r4 ON r4.product_id = z.id
                 LEFT JOIN (
                     SELECT
-                        c.product_id, c.productPrice_id,
-                        GROUP_CONCAT(c.discount_name SEPARATOR ', ') productPriceDisc_name,
-                        GROUP_CONCAT(c.discount_value SEPARATOR ', ') productPriceDisc_value,
-                        GROUP_CONCAT(c.discount_desc SEPARATOR ', ') productPriceDisc_desc
+                        product_id,
+                        GROUP_CONCAT(DISTINCT tax_name SEPARATOR ', ') productPriceTax_name,
+                        GROUP_CONCAT(DISTINCT tax_value SEPARATOR ', ') productPriceTax_value,
+                        GROUP_CONCAT(DISTINCT tax_desc SEPARATOR ', ') productPriceTax_desc
                     FROM (
                         SELECT
-                            d3.product_id, d1.productPrice_id, d1.discount_id,
-                            d2.name discount_name, IF (d2.isPercent = '1', CONCAT(d2.value, '%'), d2.value) discount_value,
-                            CONCAT(d2.name, ' (', IF (d2.isPercent = '1', CONCAT(d2.value, '%'), d2.value), ')') discount_desc
-                        FROM productPriceDisc d1
-                        LEFT JOIN discount d2 ON d2.id = d1.discount_id AND d2.op_id IN (1, 2)
-                        LEFT JOIN productPrice d3 ON d3.id = d1.productPrice_id AND d3.op_id IN (1, 2)
-                        WHERE d1.op_id IN (1, 2)
-                    ) c
-                    GROUP BY c.productPrice_id
-                ) r5 ON r5.productPrice_id = r4.id
+                            r3.product_id,
+                            r1.name tax_name, IF (r1.isPercent = '1', CONCAT(r1.value, '%'), r1.value) tax_value,
+                            CONCAT(r1.name, ' (', IF (r1.isPercent = '1', CONCAT(r1.value, '%'), r1.value), ')') tax_desc
+                        FROM productPriceTax z
+                        LEFT JOIN tax r1 ON r1.id = z.tax_id AND r1.op_id IN (1, 2)
+                        LEFT JOIN productPrice r2 ON r2.id = z.productPrice_id AND r2.op_id IN (1, 2)
+                        LEFT JOIN productCode r3 ON r3.id = r2.productCode_id AND r3.op_id IN (1, 2)
+                        WHERE z.op_id IN (1, 2)
+                    ) z
+                    GROUP BY product_id
+                ) r5 ON r5.product_id = z.id
                 LEFT JOIN (
-                    SELECT
-                        d.product_id, d.productPrice_id,
-                        GROUP_CONCAT(d.tax_name SEPARATOR ', ') productPriceTax_name,
-                        GROUP_CONCAT(d.tax_value SEPARATOR ', ') productPriceTax_value,
-                        GROUP_CONCAT(d.tax_desc SEPARATOR ', ') productPriceTax_desc
+                    SELECT product_id, GROUP_CONCAT(DISTINCT name SEPARATOR ', ') productTag_name
                     FROM (
-                        SELECT
-                            e3.product_id, e1.productPrice_id, e1.tax_id,
-                            e2.name tax_name, IF (e2.isPercent = '1', CONCAT(e2.value, '%'), e2.value) tax_value,
-                            CONCAT(e2.name, ' (', IF (e2.isPercent = '1', CONCAT(e2.value, '%'), e2.value), ')') tax_desc
-                        FROM productPriceTax e1
-                        LEFT JOIN tax e2 ON e2.id = e1.tax_id AND e2.op_id IN (1, 2)
-                        LEFT JOIN productPrice e3 ON e3.id = e1.productPrice_id AND e3.op_id IN (1, 2)
-                        WHERE e1.op_id IN (1, 2)
-                    ) d
-                    GROUP BY d.productPrice_id
-                ) r6 ON r6.productPrice_id = r4.id
-                LEFT JOIN (
-                    SELECT e.product_id, GROUP_CONCAT(e.name SEPARATOR ', ') productTag_name
-                    FROM (
-                        SELECT c1.tag_id tag_id1, c2.tag_id tag_id2, c1.product_id, c2.name, c1.op_id FROM productTag c1
-                        LEFT JOIN tag c2 ON c2.id = c1.tag_id AND c2.op_id IN (1, 2)
+                        SELECT z.tag_id tag_id1, r1.tag_id tag_id2, z.product_id, r1.name, z.op_id FROM productTag z
+                        LEFT JOIN tag r1 ON r1.id = z.tag_id AND r1.op_id IN (1, 2)
                         UNION
-                        SELECT c2.tag_id tag_id1, c3.tag_id tag_id2, c1.product_id, c3.name, c1.op_id FROM productTag c1
-                        LEFT JOIN tag c2 ON c2.id = c1.tag_id AND c2.op_id IN (1, 2)
-                        LEFT JOIN tag c3 ON c3.id = c2.tag_id AND c3.op_id IN (1, 2)
+                        SELECT r1.tag_id tag_id1, r2.tag_id tag_id2, z.product_id, r2.name, z.op_id FROM productTag z
+                        LEFT JOIN tag r1 ON r1.id = z.tag_id AND r1.op_id IN (1, 2)
+                        LEFT JOIN tag r2 ON r2.id = r1.tag_id AND r2.op_id IN (1, 2)
                         ORDER BY tag_id2, tag_id1
-                    ) e
+                    ) z
                     WHERE op_id IN (1, 2)
                     GROUP BY product_id
-                ) r7 ON r7.product_id = z.id
-                LEFT JOIN \`status\` r8 ON r8.id = z.status_id AND r8.op_id IN (1, 2)
+                ) r6 ON r6.product_id = z.id
+                LEFT JOIN \`status\` r7 ON r7.id = z.status_id AND r7.op_id IN (1, 2)
                 WHERE (z.op_id IN (1, 2))
+                ORDER BY z.id DESC
             `;
-            let tags = [], discounts = [], taxes = [], pricesIds = [], productIds = [];
-            let total, products = await compile(`
-                SELECT * FROM (${productQuery}) product
-                ${adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : ''}
-            `);
-
-            if (products.length) {
-                productIds = products.map(function (product) {
-                    let priceId = product.productPrice_id;
-                    if (pricesIds.indexOf(priceId) < 0) {
-                        pricesIds.push(product.productPrice_id);
-                    }
-                    return product.id
-                });
-                tags = await compile(`
-                    SELECT
-                        a.id, a.product_id,
-                        a.tag_id, b.name tag_name,  
-                        b.tag_id tag_tag_id, c.name tag_tag_name,
-                        a.status_id, a.notes
-                    FROM productTag a 
-                    LEFT JOIN tag b ON b.id = a.tag_id AND b.op_id IN (1, 2)
-                    LEFT JOIN tag c ON c.id = b.tag_id AND c.op_id IN (1, 2)
-                    WHERE a.product_id in (${productIds.join(',')}) AND a.op_id IN (1, 2)
-                `);
-                if (tags.length) {
-                    tags.forEach(function (tag) {
-                        products.forEach(function (product) {
-                            product.productTag = product.productTag || [];
-                            if (product.id === tag.product_id) {
-                                product.productTag.push(tag);
-                            }
-                        });
-                    })
-                }
-            }
-            if (pricesIds.length) {
-                discounts = await compile(`
-                    SELECT
-                        a.id, a.productPrice_id,
-                        a.discount_id,
-                        b.name discount_name, 
-                        b.isPercent discount_isPercent,
-                        b.value discount_value,
-                        b.notes discount_notes,
-                        a.status_id, a.notes
-                    FROM productPriceDisc a 
-                    LEFT JOIN discount b ON b.id = a.discount_id AND b.op_id IN (1, 2)
-                    WHERE a.productPrice_id in (${pricesIds.join(',')}) AND a.op_id IN (1, 2)
-                `);
-                taxes = await compile(`
-                    SELECT
-                        a.id, a.productPrice_id,
-                        a.tax_id,
-                        b.name tax_name, 
-                        b.isPercent tax_isPercent,
-                        b.value tax_value,
-                        b.notes tax_notes,
-                        a.status_id, a.notes
-                    FROM productPriceTax a 
-                    LEFT JOIN tax b ON b.id = a.tax_id AND b.op_id IN (1, 2)
-                    WHERE a.productPrice_id in (${pricesIds.join(',')}) AND a.op_id IN (1, 2)
-                `);
-                if (discounts.length) {
-                    pricesIds.forEach(function (priceId) {
-                        let productPriceDisc = discounts.filter(function (discount) {
-                            if (discount.productPrice_id === priceId) return 1;
-                            return 0;
-                        });
-                        let productPriceTax = taxes.filter(function (discount) {
-                            if (discount.productPrice_id === priceId) return 1;
-                            return 0;
-                        });
-                        products.forEach(function (product) {
-                            if (product.productPrice_id === priceId) {
-                                product.productPriceDisc = productPriceDisc;
-                                product.productPriceTax = productPriceTax
-                            }
-                        });
-                    })
-                }
-            }
-            total = await compile(`
+            let products = await compile(`SELECT * FROM (${productQuery}) product ${whereOrderLimit(adtQuery)}`);
+            let total = await compile(`
                 SELECT COUNT(*) xy FROM (${productQuery}) product
-                ${
-                (adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : '')
-                .replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')
-                }
+                ${whereOrderLimit(adtQuery).replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')}
             `);
             res.send({status, message, total: total[0].xy, data: products});
         } catch (e) {
@@ -279,59 +324,51 @@ module.exports = function ({Glob, locals, compile}) {
                             WHERE transItem_id IS NULL
                             GROUP BY productPrice_id
                         ) z
+                        GROUP BY trans_id
                     ) r2 ON r2.trans_id = z.id
                     GROUP BY z.id
                 ) r1
                 JOIN (
                     SELECT
                         z.id, (
-                            r2.price - IF(r4.discount, r4.discount, 0) + IF(r5.tax, r5.tax, 0)
+                            r2.price - IF(r3.discount, r3.discount, 0) + IF(r4.tax, r4.tax, 0)
                         ) * r1.qty * IF(r1.transItem_id IS NOT NULL, -1, 1) TOTAL
                     FROM trans z
                     LEFT JOIN transItem r1 ON r1.trans_id = z.id AND r1.op_id IN (1, 2)
                     LEFT JOIN productPrice r2 ON r2.id = r1.productPrice_id AND r2.op_id IN (1, 2)
-                    LEFT JOIN product r3 ON r3.id = r2.product_id AND r3.op_id IN (1, 2)
                     LEFT JOIN (
                         SELECT
                             z.id, z.transItem_id,
-                            SUM(IF(r5.isPercent = 1, r5.value, r5.value/100 * r1.price)) discount
+                            SUM(IF(r4.isPercent = 1, r4.value, r4.value/100 * r1.price)) discount
                         FROM transItem z
                         JOIN productPrice r1 ON r1.id = z.productPrice_id AND r1.op_id IN (1, 2)
-                        JOIN product r2 ON r2.id = r1.product_id AND r2.op_id IN (1, 2)
-                        LEFT JOIN transItemDisc r3 ON r3.transItem_id = z.id AND r3.op_id IN (1, 2)
-                        LEFT JOIN productPriceDisc r4 ON r4.id = r3.productPriceDisc_id AND r4.op_id IN (1, 2)
-                        LEFT JOIN discount r5 ON r5.id = r4.discount_id AND r5.op_id IN (1, 2)
+                        LEFT JOIN transItemDisc r2 ON r2.transItem_id = z.id AND r2.op_id IN (1, 2)
+                        LEFT JOIN productPriceDisc r3 ON r3.id = r2.productPriceDisc_id AND r3.op_id IN (1, 2)
+                        LEFT JOIN discount r4 ON r4.id = r3.discount_id AND r4.op_id IN (1, 2)
+                        WHERE z.op_id IN (1, 2)
+                        GROUP BY z.id
+                    ) r3 ON r3.id = r1.id
+                    LEFT JOIN (
+                        SELECT
+                            z.id, z.transItem_id,
+                            SUM(IF(r4.isPercent = 1, r4.value, r4.value/100 * r1.price)) tax
+                        FROM transItem z
+                        JOIN productPrice r1 ON r1.id = z.productPrice_id AND r1.op_id IN (1, 2)
+                        LEFT JOIN transItemTax r2 ON r2.transItem_id = z.id AND r2.op_id IN (1, 2)
+                        LEFT JOIN productPriceTax r3 ON r3.id = r2.productPriceTax_id AND r3.op_id IN (1, 2)
+                        LEFT JOIN tax r4 ON r4.id = r3.Tax_id AND r4.op_id IN (1, 2)
                         WHERE z.op_id IN (1, 2)
                         GROUP BY z.id
                     ) r4 ON r4.id = r1.id
-                    LEFT JOIN (
-                        SELECT
-                            z.id, z.transItem_id,
-                            SUM(IF(r5.isPercent = 1, r5.value, r5.value/100 * r1.price)) tax
-                        FROM transItem z
-                        JOIN productPrice r1 ON r1.id = z.productPrice_id AND r1.op_id IN (1, 2)
-                        JOIN product r2 ON r2.id = r1.product_id AND r2.op_id IN (1, 2)
-                        LEFT JOIN transItemTax r3 ON r3.transItem_id = z.id AND r3.op_id IN (1, 2)
-                        LEFT JOIN productPriceTax r4 ON r4.id = r3.productPriceTax_id AND r4.op_id IN (1, 2)
-                        LEFT JOIN tax r5 ON r5.id = r4.tax_id AND r5.op_id IN (1, 2)
-                        WHERE z.op_id IN (1, 2)
-                        GROUP BY z.id
-                    ) r5 ON r5.id = r1.id
                 ) r2 ON r2.id = r1.id
                 JOIN person r3 ON r3.id = person_id AND r3.op_id IN (1, 2)
                 LEFT JOIN person r4 ON r4.id = subject_id AND r4.op_id IN (1, 2)
                 GROUP BY r1.id
             `;
-            let transaction = await compile(`
-                SELECT * FROM (${transactionQuery}) sales
-                ${adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : ''}
-            `);
+            let transaction = await compile(`SELECT * FROM (${transactionQuery}) sales ${whereOrderLimit(adtQuery)}`);
             let total = await compile(`
                 SELECT COUNT(*) xy FROM (${transactionQuery}) sales
-                ${
-                (adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : '')
-                .replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')
-                }
+                ${whereOrderLimit(adtQuery).replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')}
             `);
             res.send({status, message, total: total[0].xy, data: transaction});
         } catch (e) {
@@ -349,13 +386,12 @@ module.exports = function ({Glob, locals, compile}) {
             let transactionItemQuery = `
                 SELECT
                     r1.id, r1.modifier_id, r2.name modifier_name, r1.transItem_id,
-                    r4.id product_id, r4.name product_name, 
-                    r8.id productCode_id, r8.code productCode_code, 
-                    r3.price productPrice_price, 
-                    qty, r1.qties, r3.unit_id, r7.name unit_name,
-                    IF(r5.discount, r5.discount, 0) disc, IF(r6.tax, r6.tax, 0) tax,
-                    (r3.price - IF(r5.discount, r5.discount, 0) + IF(r6.tax, r6.tax, 0)) * qty total,
-                    r1.trans_id, r1.person_id, r9.name person_name, r1.notes
+                    r5.id product_id, r5.name product_name, 
+                    r3.price productPrice_price, r3.productCode_id, r9.code productCode_code,
+                    qty, r1.qties, r3.unit_id, r8.name unit_name,
+                    IF(r6.discount, r6.discount, 0) disc, IF(r7.tax, r7.tax, 0) tax,
+                    (r3.price - IF(r6.discount, r6.discount, 0) + IF(r7.tax, r7.tax, 0)) * qty total,
+                    r1.trans_id, r1.person_id, r10.name person_name, r1.notes
                 FROM trans z
                 JOIN (
                     SELECT 
@@ -363,63 +399,51 @@ module.exports = function ({Glob, locals, compile}) {
                     FROM transItem z
                     LEFT JOIN (
                         SELECT
-                            r1.transItem_id, r1.productPrice_id, SUM(r1.qty) qty
+                            z.id trans_id, r1.id, r1.transItem_id, r1.productPrice_id, sum(r1.qty) qty
                         FROM trans z
                         LEFT JOIN transItem r1 ON r1.trans_id = z.id AND r1.op_id IN (1, 2)
                         LEFT JOIN modifier r2 ON r2.id = r1.modifier_id AND r2.op_id IN (1, 2)
                         WHERE r1.transItem_id IS NOT NULL AND modifier_id IS NOT NULL
                         GROUP BY r1.productPrice_id, r1.transItem_id
-                    ) r1 ON r1.productPrice_id = z.productPrice_id
+                    ) r1 ON r1.productPrice_id = z.productPrice_id AND r1.trans_id = z.trans_id
                 ) r1 ON r1.trans_id = z.id AND r1.op_id IN (1, 2)
                 LEFT JOIN modifier r2 ON r2.id = r1.modifier_id AND r2.op_id IN (1, 2)
                 JOIN productPrice r3 ON r3.id = r1.productPrice_id AND r3.op_id IN (1, 2)
-                JOIN product r4 ON r4.id = r3.product_id AND r4.op_id IN (1, 2)
+                JOIN productCode r4 ON r4.id = r3.productCode_id AND r4.op_id IN (1, 2)
+                JOIN product r5 ON r5.id = r4.product_id AND r5.op_id IN (1, 2)
                 LEFT JOIN (
                     SELECT
-                        z.id, z.transItem_id,
-                        SUM(IF(r5.isPercent = 1, r5.value, r5.value/100 * r1.price)) discount
+	                    z.id, z.transItem_id,
+                        SUM(IF(r4.isPercent = 1, r4.value, r4.value/100 * r1.price)) discount
                     FROM transItem z
                     JOIN productPrice r1 ON r1.id = z.productPrice_id AND r1.op_id IN (1, 2)
-                    JOIN product r2 ON r2.id = r1.product_id AND r2.op_id IN (1, 2)
-                    LEFT JOIN transItemDisc r3 ON r3.transItem_id = z.id AND r3.op_id IN (1, 2)
-                    LEFT JOIN productPriceDisc r4 ON r4.id = r3.productPriceDisc_id AND r4.op_id IN (1, 2)
-                    LEFT JOIN discount r5 ON r5.id = r4.discount_id AND r5.op_id IN (1, 2)
+                    LEFT JOIN transItemDisc r2 ON r2.transItem_id = z.id AND r2.op_id IN (1, 2)
+                    LEFT JOIN productPriceDisc r3 ON r3.id = r2.productPriceDisc_id AND r3.op_id IN (1, 2)
+                    LEFT JOIN discount r4 ON r4.id = r3.discount_id AND r4.op_id IN (1, 2)
                     WHERE z.op_id IN (1, 2)
-                    GROUP BY z.id
-                ) r5 ON r5.id = r1.id
-                LEFT JOIN (
-                    SELECT
-                        z.id, z.transItem_id,
-                        SUM(IF(r5.isPercent = 1, r5.value, r5.value/100 * r1.price)) tax
-                    FROM transItem z
-                    JOIN productPrice r1 ON r1.id = z.productPrice_id AND r1.op_id IN (1, 2)
-                    JOIN product r2 ON r2.id = r1.product_id AND r2.op_id IN (1, 2)
-                    LEFT JOIN transItemTax r3 ON r3.transItem_id = z.id AND r3.op_id IN (1, 2)
-                    LEFT JOIN productPriceTax r4 ON r4.id = r3.productPriceTax_id AND r4.op_id IN (1, 2)
-                    LEFT JOIN tax r5 ON r5.id = r4.tax_id AND r5.op_id IN (1, 2)
-                    WHERE z.op_id IN (1, 2)
-                    GROUP BY z.id
+    	            GROUP BY z.id
                 ) r6 ON r6.id = r1.id
-                JOIN unit r7 ON r7.id = r3.unit_id AND r7.op_id IN (1, 2)
                 LEFT JOIN (
-                    SELECT * FROM productCode
-                    WHERE op_id IN (1, 2)
-                    GROUP BY product_id
-                    ORDER BY dc DESC, id DESC
-                ) r8 on r8.product_id = r4.id
-                JOIN person r9 ON r9.id = r1.person_id AND r9.op_id IN (1, 2)
-                ORDER BY r4.id, r1.id
+                    SELECT
+                        z.id, z.transItem_id,
+                        SUM(IF(r4.isPercent = 1, r4.value, r4.value/100 * r1.price)) tax
+                    FROM transItem z
+                    JOIN productPrice r1 ON r1.id = z.productPrice_id AND r1.op_id IN (1, 2)
+                    LEFT JOIN transItemTax r2 ON r2.transItem_id = z.id AND r2.op_id IN (1, 2)
+                    LEFT JOIN productPriceTax r3 ON r3.id = r2.productPriceTax_id AND r3.op_id IN (1, 2)
+                    LEFT JOIN tax r4 ON r4.id = r3.Tax_id AND r4.op_id IN (1, 2)
+                    WHERE z.op_id IN (1, 2)
+                    GROUP BY z.id
+                ) r7 ON r7.id = r1.id
+                JOIN unit r8 ON r8.id = r3.unit_id AND r8.op_id IN (1, 2)
+                JOIN productCode r9 ON r9.id = r3.productCode_id AND r9.op_id IN (1, 2)
+                JOIN person r10 ON r10.id = r1.person_id AND r10.op_id IN (1, 2)
+                ORDER BY r1.id, r4.id
             `;
-            let transactionItem = await compile(`
-                SELECT * FROM (${transactionItemQuery}) sales ${
-                    adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : ''
-                }
-            `);
+            let transactionItem = await compile(`SELECT * FROM (${transactionItemQuery}) sales ${whereOrderLimit(adtQuery)}`);
             let total = await compile(`
-                SELECT COUNT(*) xy FROM (${transactionItemQuery}) sales ${
-                    (adtQuery.indexOf('where') > 0 ? adtQuery.substr(adtQuery.indexOf('where')).replace(/WTF\./g, '') : '')
-                    .replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')
-                }
+                SELECT COUNT(*) xy FROM (${transactionItemQuery}) sales
+                ${whereOrderLimit(adtQuery).replace(/limit\s[0-9]+|offset\s[0-9]+/g, '')}
             `);
             res.send({status, message, total: total[0].xy, data: transactionItem});
         } catch (e) {
