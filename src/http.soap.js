@@ -110,9 +110,10 @@ module.exports = function ({Glob, locals, compile}) {
 
                 let priceIds = [], prices = await compile(`
                     SELECT
-                        z.id, r3.product_id, z.price, z.dc, z.notes,
-                        r1.id type_id, r1.name type_name, r1.dc type_dc, r1.notes type_notes,
-                        r2.id unit_id, r2.short unit_short, r2.name unit_name, r2.dc unit_dc, r2.notes unit_notes
+                        z.id, z.price, z.dc, z.notes,
+                        r1.id type_id, r1.name type_name, r1.dc type_dc,
+                        r2.id unit_id, r2.short unit_short, r2.name unit_name, r2.dc unit_dc, r2.notes unit_notes,
+                        r3.product_id, r3.id productCode_id, r3.code productCode_code
                     FROM productPrice z
                     JOIN \`type\` r1 ON r1.id = z.type_id AND r1.op_id IN (1, 2)
                     JOIN \`unit\` r2 ON r2.id = z.unit_id AND r2.op_id IN (1, 2)
@@ -126,7 +127,7 @@ module.exports = function ({Glob, locals, compile}) {
 
                     products.forEach(function (product) {
                         product.prices = product.prices || [];
-                        if (product.id === price.product_id) {
+                        if (product.productCode_id === price.productCode_id) {
                             product.prices.push(price)
                         }
                     })
@@ -319,10 +320,8 @@ module.exports = function ({Glob, locals, compile}) {
                     FROM trans z
                     LEFT JOIN transPayment r1 ON r1.trans_id = z.id AND r1.op_id IN (1, 2)
                     LEFT JOIN (
-                    	SELECT trans_id, COUNT(num) numofprod FROM (
-                            SELECT trans_id, COUNT(*) num FROM transItem
-                            WHERE transItem_id IS NULL
-                            GROUP BY productPrice_id
+                    	SELECT trans_id, SUM(num) numofprod FROM (
+                            SELECT trans_id, 1 num FROM transItem WHERE transItem_id IS NULL GROUP BY trans_id, productPrice_id
                         ) z
                         GROUP BY trans_id
                     ) r2 ON r2.trans_id = z.id
